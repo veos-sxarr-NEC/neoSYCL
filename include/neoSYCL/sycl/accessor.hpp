@@ -251,7 +251,7 @@ public:
   template <
       access::mode Mode = accessMode, int D = dimensions,
       typename = std::enable_if_t<(Mode == access::mode::read) && (D == 3)>>
-  const dataT** operator[](size_t index) const {
+  const detail::container::AccessProxyND<dataT, 3> operator[](size_t index) const {
     return (*data)[index];
   }
 
