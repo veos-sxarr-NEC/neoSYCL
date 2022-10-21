@@ -135,11 +135,13 @@ public:
   get_access(handler& commandGroupHandler) {
     accessor<T, dimensions, mode, target> acc(*this);
     commandGroupHandler.alloc_mem_(acc);
+    copy_host2dev(mode);
     return acc;
   }
 
   template <access::mode mode>
   accessor<T, dimensions, mode, access::target::host_buffer> get_access() {
+    copy_dev2host(mode);
     return accessor<T, dimensions, mode, access::target::host_buffer>(*this);
   }
 
@@ -151,12 +153,14 @@ public:
     accessor<T, dimensions, mode, target> acc(*this, commandGroupHandler,
                                               accessRange, accessOffset);
     commandGroupHandler.alloc_mem_(acc);
+    copy_host2dev(mode);
     return acc;
   }
 
   template <access::mode mode>
   accessor<T, dimensions, mode, access::target::host_buffer>
   get_access(range<dimensions> accessRange, id<dimensions> accessOffset = {}) {
+    copy_dev2host(mode);
     return accessor<T, dimensions, mode, access::target::host_buffer>(
         *this, accessRange, accessOffset);
   }
@@ -195,6 +199,34 @@ public:
 private:
   range<dimensions> bufferRange;
   std::shared_ptr<container_type> data;
+  bool first_dev_write = 1;
+  int last_write_plat = 0;
+
+  void copy_host2dev(access::mode mode) {
+    if (last_write_plat != 1 && first_dev_write != 1) {
+      for (auto& d : data->map) {
+         d.first->write_mem(data->map.at(d.first).ptr,data->get_raw_ptr(),data->get_size());
+      }
+    }
+    if (mode != access::mode::read) {
+      last_write_plat = 1;
+      if (first_dev_write == 1) {
+        first_dev_write = 0;
+      }
+    }
+  }
+
+  void copy_dev2host(access::mode mode) {
+    if (last_write_plat != 0) {
+      for (auto& d :data->map) {
+          d.first->read_mem(data->get_raw_ptr(),data->map.at(d.first).ptr,data->get_size());
+      }
+    }
+    if (mode != access::mode::read) {
+      last_write_plat = 0;
+    }
+  }
+
 };
 
 template <typename Ty, int D, typename A>

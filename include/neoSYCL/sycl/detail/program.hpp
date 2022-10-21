@@ -8,6 +8,8 @@
 
 namespace neosycl::sycl {
 
+template <typename T, int dimensions, typename AllocatorT>
+class buffer;
 class handler;
 
 namespace detail::container {
@@ -36,6 +38,7 @@ inline string_class get_kernel_name_from_class(const std::type_info& ti) {
 // internal program state on each device and interface to handle the device
 class program_data {
 public:
+  template <typename T, int dimensions, typename AllocatorT> friend class neosycl::sycl::buffer;
   friend class neosycl::sycl::handler;
   friend class container::CopybackProxy;
 
