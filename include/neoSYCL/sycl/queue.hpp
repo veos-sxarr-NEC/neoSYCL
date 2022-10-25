@@ -94,7 +94,7 @@ public:
       c->decr();
     });
     t.detach();
-    return event();
+    return event(counter);
   }
 #else
   /* this may run each command group faster but all command groups will be
