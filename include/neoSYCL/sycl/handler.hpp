@@ -2,6 +2,7 @@
 #include "neoSYCL/sycl/detail/task_counter.hpp"
 #include "neoSYCL/sycl/detail/handler.hpp"
 #include "neoSYCL/sycl/detail/accessor_data.hpp"
+#include <semaphore.h>
 
 namespace neosycl::sycl {
 
@@ -12,9 +13,9 @@ class handler {
 
   friend class queue;
 
-  explicit handler(device d, program p, counter_type counter)
+  explicit handler(device d, program p, counter_type counter, sem_t* buf_acc_fence, int submit_num)
       : dev_(std::move(d)), prog_(std::move(p)), cntr_(std::move(counter)),
-        hndl_(prog_.get_data(dev_)) {}
+        hndl_(prog_.get_data(dev_)), buf_acc_fence_(buf_acc_fence), submit_num_(submit_num) {}
 
   ~handler() {
     for (size_t i(0); i < acc_.size(); i++) {
@@ -24,6 +25,8 @@ class handler {
       else
         acc_[i].data->unlock_read();
     }
+
+    sem_post(&buf_acc_fence_[submit_num_+1]);
   }
 
 public:
@@ -216,6 +219,11 @@ public:
     using device_ptr_type = detail::container::device_ptr_type;
     shared_ptr_class<container_type> buf = acc.data;
 
+    if (first_buf_access == 1) {
+      sem_wait(&buf_acc_fence_[submit_num_]);
+      first_buf_access = 0;
+    }
+
     // allocate a device memory chunk if not allocated yet
     int count = 0;
     if (dev_.is_host() == false) {
@@ -294,6 +302,9 @@ private:
   counter_type cntr_;
   handler_type hndl_;
   vector_class<detail::accessor_data> acc_;
+  bool first_buf_access = 1;
+  sem_t* buf_acc_fence_;
+  int submit_num_;
 
   template <typename F, typename retT, typename argT>
   auto index_type_ptr(retT (F::*)(argT)) {

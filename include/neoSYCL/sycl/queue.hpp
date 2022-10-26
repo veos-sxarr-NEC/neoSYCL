@@ -1,6 +1,7 @@
 #pragma once
 #include "neoSYCL/sycl/info/queue.hpp"
 #include "neoSYCL/sycl/detail/task_counter.hpp"
+#include <semaphore.h>
 
 namespace neosycl::sycl {
 
@@ -9,7 +10,9 @@ class queue {
 public:
   explicit queue(const property_list& propList = {})
       : bind_device(device::get_default_device()),
-        counter(new detail::task_counter()), ctx(bind_device), prog(ctx) {}
+        counter(new detail::task_counter()), ctx(bind_device), prog(ctx) {
+    first_sem_set();
+  }
 
   explicit queue(const async_handler& asyncHandler,
                  const property_list& propList = {})
@@ -77,10 +80,11 @@ public:
 #ifndef DISABLE_MULTI_THREAD_SUPPORT
   template <typename T>
   event submit(T cgf) {
+    sem_set();
     counter->incr();
-    std::thread t([f = cgf, d = bind_device, p = prog, c = counter]() {
+    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, b = buf_acc_fence, s = submit_num]() {
       try {
-        handler command_group_handler(d, p, c);
+        handler command_group_handler(d, p, c, b, s);
         f(command_group_handler);
       }
       catch (std::exception& e) {
@@ -132,6 +136,7 @@ public:
 
   virtual ~queue() {
     counter->wait();
+    delete [] buf_acc_fence;
   }
 
 private:
@@ -140,6 +145,21 @@ private:
   async_handler err_handler;
   context ctx;
   program prog;
+  int sem_size = 1024;
+  int submit_num = -1;
+  sem_t* buf_acc_fence = new sem_t[sem_size];
+
+  void first_sem_set () {
+    sem_init(&buf_acc_fence[0], 0, 1);
+  }
+
+  void sem_set () {
+    submit_num++;
+    if(submit_num == sem_size-1) {
+      PRINT_ERR("MAX sem size");
+    }
+    sem_init(&buf_acc_fence[submit_num+1], 0, 0);
+  }
 };
 
 } // namespace neosycl::sycl
