@@ -82,9 +82,9 @@ public:
   event submit(T cgf) {
     sem_set();
     counter->incr();
-    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, b = buf_acc_fence, s = submit_num]() {
+    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, k = kernel_listptr]() {
       try {
-        handler command_group_handler(d, p, c, b, s);
+        handler command_group_handler(d, p, c, k);
         f(command_group_handler);
       }
       catch (std::exception& e) {
@@ -136,7 +136,7 @@ public:
 
   virtual ~queue() {
     counter->wait();
-    delete [] buf_acc_fence;
+    list_free();
   }
 
 private:
@@ -145,20 +145,38 @@ private:
   async_handler err_handler;
   context ctx;
   program prog;
-  int sem_size = 1024;
-  int submit_num = -1;
-  sem_t* buf_acc_fence = new sem_t[sem_size];
+  kernel_list *head = new kernel_list;
+  kernel_list *kernel_listptr;
 
+  /*The first kernel does not lock*/
   void first_sem_set () {
-    sem_init(&buf_acc_fence[0], 0, 1);
+    sem_init(head->fence, 0, 1);
   }
 
+  /*Lock the next submitted kernel in advance*/
   void sem_set () {
-    submit_num++;
-    if(submit_num == sem_size-1) {
-      PRINT_ERR("MAX sem size");
+    kernel_list *newlist = new kernel_list;
+    kernel_list *listptr = head;
+    
+    while (listptr->next) {
+      listptr = listptr->next;
     }
-    sem_init(&buf_acc_fence[submit_num+1], 0, 0);
+    
+    kernel_listptr = listptr;
+    listptr->next = newlist;
+    sem_init(listptr->next->fence, 0, 0);
+  }
+
+  /*Free the memory of the list*/
+  void list_free() {
+    kernel_list *listptr = head;
+    kernel_list *nextptr;
+    
+    while (listptr != NULL) {
+      nextptr = listptr->next;
+      delete listptr;
+      listptr = nextptr;
+    }
   }
 };
 

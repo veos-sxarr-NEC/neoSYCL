@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <semaphore.h>
 
 namespace neosycl::sycl {
 
@@ -61,4 +62,20 @@ using cl_ulong  = unsigned long;
 using cl_float  = float;
 using cl_double = double;
 using cl_half   = half;
+
+/*List for kernel execution ordering*/
+struct kernel_list {
+  sem_t *fence;
+  struct kernel_list *next;
+
+  kernel_list () {
+    fence = new sem_t;
+    next = NULL;
+  }
+
+  ~kernel_list () {
+    delete[]  fence;
+  }
+};
+
 } // namespace neosycl::sycl
