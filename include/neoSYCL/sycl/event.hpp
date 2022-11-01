@@ -6,8 +6,8 @@ class event {
 public:
   event() {}
 
-  explicit event(shared_ptr_class<detail::task_counter> counter)
-    : c(counter) {}
+  explicit event(shared_ptr_class<detail::task_counter> counter, async_handler err_handler, exception_list* exlist)
+    : c(counter), h(err_handler), l(exlist) {}
 
   ~event() {}
 
@@ -24,7 +24,17 @@ public:
   }
 
   void wait_and_throw() {
-    throw unimplemented();
+    c->wait();
+    if (h == NULL) {
+      return;
+    }
+
+    exception_list tmp_exlist;
+    std::swap(tmp_exlist, *l);
+
+    if (tmp_exlist.size()) {
+      h(std::move(tmp_exlist));
+    }
   }
 
   static void wait_and_throw(const vector_class<event>& eventList) {
@@ -33,6 +43,8 @@ public:
 
 private:
   shared_ptr_class<detail::task_counter> c;
+  async_handler h;
+  exception_list* l;
 };
 
 } // namespace neosycl::sycl

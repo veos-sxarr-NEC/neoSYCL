@@ -82,23 +82,23 @@ public:
   event submit(T cgf) {
     sem_set();
     counter->incr();
-    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, k = kernel_listptr]() {
+    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, k = kernel_listptr, l = exlist]() {
       try {
         handler command_group_handler(d, p, c, k);
         f(command_group_handler);
       }
       catch (std::exception& e) {
         PRINT_ERR("%s", e.what());
-        throw;
+	l->pushback(std::current_exception());
       }
       catch (...) {
         PRINT_ERR("unknown exception");
-        throw;
+        l->pushback(std::current_exception());
       }
       c->decr();
     });
     t.detach();
-    return event(counter);
+    return event(counter, err_handler, exlist);
   }
 #else
   /* this may run each command group faster but all command groups will be
@@ -130,19 +130,35 @@ public:
     counter->wait();
   }
 
-  void wait_and_throw();
+  void wait_and_throw() {
+    counter->wait();
+    throw_asynchronous();
+  }
 
-  void throw_asynchronous();
+  void throw_asynchronous() {
+    if (err_handler == NULL) {
+      return;
+    }
+
+    exception_list tmp_exlist;
+    std::swap(tmp_exlist, *exlist);
+
+    if (tmp_exlist.size()) {
+      err_handler(std::move(tmp_exlist));
+    }
+  }
 
   virtual ~queue() {
     counter->wait();
     list_free();
+    delete exlist;
   }
 
 private:
   device bind_device;
   shared_ptr_class<detail::task_counter> counter;
   async_handler err_handler;
+  exception_list* exlist = new exception_list;
   context ctx;
   program prog;
   kernel_list *head = new kernel_list;
