@@ -18,28 +18,38 @@ public:
                  const property_list& propList = {})
       : bind_device(device::get_default_device()),
         counter(new detail::task_counter()), err_handler(asyncHandler),
-        ctx(bind_device), prog(ctx) {}
+        ctx(bind_device), prog(ctx) {
+    first_sem_set();
+  }
 
   explicit queue(const device_selector& deviceSelector,
                  const property_list& propList = {})
       : bind_device(deviceSelector.select_device()),
-        counter(new detail::task_counter()), ctx(bind_device), prog(ctx) {}
+        counter(new detail::task_counter()), ctx(bind_device), prog(ctx) {
+    first_sem_set();
+  }
 
   explicit queue(const device_selector& deviceSelector,
                  const async_handler& asyncHandler,
                  const property_list& propList = {})
       : bind_device(deviceSelector.select_device()),
         counter(new detail::task_counter()), err_handler(asyncHandler),
-        ctx(bind_device), prog(ctx) {}
+        ctx(bind_device), prog(ctx) {
+    first_sem_set();
+  }
 
   explicit queue(const device& syclDevice, const property_list& propList = {})
       : bind_device(syclDevice), counter(new detail::task_counter()),
-        ctx(bind_device), prog(ctx) {}
+        ctx(bind_device), prog(ctx) {
+    first_sem_set();
+  }
 
   explicit queue(const device& syclDevice, const async_handler& asyncHandler,
                  const property_list& propList = {})
       : bind_device(syclDevice), counter(new detail::task_counter()),
-        err_handler(asyncHandler), ctx(bind_device), prog(ctx) {}
+        err_handler(asyncHandler), ctx(bind_device), prog(ctx) {
+    first_sem_set();
+  }
 
   explicit queue(const context& syclContext,
                  const device_selector& deviceSelector,
