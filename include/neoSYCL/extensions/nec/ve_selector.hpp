@@ -35,4 +35,8 @@ platform platform::register_all_devices() {
   return p;
 }
 
+#if defined(USE_VE) && defined(BUILD_VE)
+  using default_selector = ve_selector;
+#endif
+
 } // namespace neosycl::sycl

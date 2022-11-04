@@ -26,7 +26,10 @@ public:
   }
 };
 
-using default_selector = cpu_selector;
+#if !defined(USE_VE) || !defined(BUILD_VE)
+  using default_selector = cpu_selector;
+#endif
+
 using host_selector    = cpu_selector;
 
 } // namespace neosycl::sycl
