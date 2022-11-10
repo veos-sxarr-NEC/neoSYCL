@@ -91,10 +91,17 @@ static void printVarDecls(CXXRecordDecl* functor_decl, Data& data,
 }
 
 static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
-  const char* pragma_omp_parallel_for = "#pragma omp parallel for\n";
+  const char* pragma_omp_parallel_for = "#pragma omp parallel for";
   const char* pragma_NEC_ivdep        = "#pragma _NEC ivdep\n";
 
   int dim = data.dim;
+
+  std::string pragma_private = "\n";
+  if(dim == 2) {
+	  pragma_private = " private(i1_)\n";
+  } else if(dim == 3) {
+	  pragma_private = " private(i1_,i2_)\n";
+  }
 
   auto vd = dyn_cast_or_null<VarDecl>(d);
   if (vd == nullptr || vd->getIdentifier() == nullptr)
@@ -107,6 +114,7 @@ static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
     st << "size_t o" << i << "_ = r_[" << i + 3 << "]  ;\n";
   }
   st << pragma_omp_parallel_for;
+  st << pragma_private;
   st << pragma_NEC_ivdep;
   for (int i(0); i < dim; i++) {
     st << "for(i" << i << "_";
