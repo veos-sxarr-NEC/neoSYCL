@@ -27,6 +27,10 @@ public:
     }
 
     ctx_ = veo_context_open(proc_);
+    if (ctx_ == NULL) {
+      DEBUG_INFO("veo_context_open failed");
+      return false;
+    }
     DEBUG_INFO("veo_ctxt created: %lx", (size_t)ctx_);
 
     return true;
