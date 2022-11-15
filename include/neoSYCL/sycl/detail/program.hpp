@@ -119,8 +119,9 @@ class program_impl {
   }
 
   void init(const vector_class<device>& d) {
-    if (d.size() == 0)
-      throw runtime_error("contenxt with no available device");
+    if (d.size() == 0) {
+      throw runtime_error("context with no available device");
+    }
     if (d.size() > 2) {
       DEBUG_INFO("one context with host and multiple devices (experimental)");
     }
@@ -131,8 +132,9 @@ class program_impl {
       else if (p)
         delete p;
     }
-    if (data_.size() == 0)
+    if (data_.size() == 0) {
       throw runtime_error("program initialization failed");
+    }
   }
 
 public:
