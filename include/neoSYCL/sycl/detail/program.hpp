@@ -65,7 +65,7 @@ protected:
   device dev_;
 
   virtual void* alloc_mem(void*, size_t)                      = 0;
-  virtual void free_mem(void*)                                = 0;
+  virtual void free_mem(void*, bool f = false)                = 0;
   virtual void write_mem(void*, void*, size_t)                = 0;
   virtual void read_mem(void*, void*, size_t, bool f = false) = 0;
   virtual void copy_mem(void*, void*, size_t)                 = 0;
@@ -228,7 +228,7 @@ public:
     return nullptr;
   }
 
-  void free_mem(void* p) override {}
+  void free_mem(void* p, bool f = false) override {}
 
   void write_mem(void* d, void* h, size_t s) override {}
 
@@ -315,11 +315,13 @@ public:
       return;
     if (buf.map.count(p)) {
       auto [devp, mode] = buf.map.at(p);
-      if (mode != access::mode::read && buf.get_raw_ptr() != nullptr)
+      if (mode != access::mode::read && buf.get_raw_ptr() != nullptr) {
         p->read_mem(buf.get_raw_ptr(), devp, buf.get_size(), destructor_flag);
       // buf.map.erase(p);
-      if (free_mem_flag)
-        p->free_mem(devp);
+      }
+      if (free_mem_flag) {
+        p->free_mem(devp, destructor_flag);
+      }
     }
   }
 };

@@ -52,9 +52,10 @@ public:
     return ret;
   }
 
-  void free_mem(void* p) override {
-    if (p)
+  void free_mem(void* p, bool f = false) override {
+    if (p) {
       free(p);
+    }
   }
 
   void write_mem(void* d, void* h, size_t s) override {

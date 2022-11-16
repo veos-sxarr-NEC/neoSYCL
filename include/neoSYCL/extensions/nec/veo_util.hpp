@@ -109,8 +109,15 @@ public:
     return (void*)ve_addr_int;
   }
 
-  int free_mem(void* p) {
-    return veo_free_mem(proc_, (uint64_t)p);
+  int free_mem(void* p, bool destructor_flag) {
+    int rt =  veo_free_mem(proc_, (uint64_t)p);
+    if (rt != VEO_COMMAND_OK) {
+      PRINT_ERR("veo_free_mem() failed (%p)", p);
+      if (destructor_flag != true) {
+        throw exception("veo_util::free_mem() failed");
+      }
+    }
+    return rt;
   }
 
   int call_func(uint64_t funcp, struct veo_args* argp) {

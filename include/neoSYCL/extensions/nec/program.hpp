@@ -50,8 +50,8 @@ public:
     return dptr;
   }
 
-  void free_mem(void* p) override {
-    util.free_mem(p);
+  void free_mem(void* p, bool f = false) override {
+    util.free_mem(p, f);
   }
 
   void write_mem(void* d, void* h, size_t s) override {
