@@ -58,8 +58,8 @@ public:
     util.write_mem(d, h, s);
   }
 
-  void read_mem(void* h, void* d, size_t s) override {
-    util.read_mem(h, d, s);
+  void read_mem(void* h, void* d, size_t s, bool f = false) override {
+    util.read_mem(h, d, s, f);
   }
 
   void copy_mem(void* d1, void* d2, size_t s) override {

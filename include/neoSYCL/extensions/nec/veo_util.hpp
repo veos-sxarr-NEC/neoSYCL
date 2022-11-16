@@ -70,11 +70,13 @@ public:
     return rt;
   }
 
-  int read_mem(void* dst, const void* src, size_t sz) {
+  int read_mem(void* dst, const void* src, size_t sz, bool destructor_flag) {
     int rt = veo_read_mem(proc_, dst, (uint64_t)src, sz);
     if (rt != VEO_COMMAND_OK) {
       PRINT_ERR("veo_read_mem() failed (%d)", rt);
-      throw exception("veo_util::read_mem() failed");
+      if (destructor_flag != true) {
+        throw exception("veo_util::read_mem() failed");
+      }
     }
     return rt;
   }

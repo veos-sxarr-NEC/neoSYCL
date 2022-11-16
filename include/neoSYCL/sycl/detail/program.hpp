@@ -64,13 +64,13 @@ public:
 protected:
   device dev_;
 
-  virtual void* alloc_mem(void*, size_t)                = 0;
-  virtual void free_mem(void*)                          = 0;
-  virtual void write_mem(void*, void*, size_t)          = 0;
-  virtual void read_mem(void*, void*, size_t)           = 0;
-  virtual void copy_mem(void*, void*, size_t)           = 0;
-  virtual void set_capture(kernel&, void* p, size_t sz) = 0;
-  virtual void set_range(kernel&, size_t r[6])          = 0;
+  virtual void* alloc_mem(void*, size_t)                      = 0;
+  virtual void free_mem(void*)                                = 0;
+  virtual void write_mem(void*, void*, size_t)                = 0;
+  virtual void read_mem(void*, void*, size_t, bool f = false) = 0;
+  virtual void copy_mem(void*, void*, size_t)                 = 0;
+  virtual void set_capture(kernel&, void* p, size_t sz)       = 0;
+  virtual void set_range(kernel&, size_t r[6])                = 0;
 
   template <int dim>
   void set_range(kernel& k, range<dim> r) {
@@ -232,7 +232,7 @@ public:
 
   void write_mem(void* d, void* h, size_t s) override {}
 
-  void read_mem(void* h, void* d, size_t s) override {}
+  void read_mem(void* h, void* d, size_t s, bool f = false) override {}
 
   void copy_mem(void* h, void* d, size_t s) override {}
 
@@ -307,7 +307,7 @@ class CopybackProxy {
 public:
   template <typename T, int D, typename A = buffer_allocator<T>>
   void operator()(BufferContainer<T, D, A>& buf,
-                  shared_ptr_class<program_data> p, bool free_mem_flag) {
+                  shared_ptr_class<program_data> p, bool free_mem_flag, bool destructor_flag) {
     DEBUG_INFO("memory copy back : device type = %d",
                (int)p->get_device().type());
 
@@ -316,7 +316,7 @@ public:
     if (buf.map.count(p)) {
       auto [devp, mode] = buf.map.at(p);
       if (mode != access::mode::read && buf.get_raw_ptr() != nullptr)
-        p->read_mem(buf.get_raw_ptr(), devp, buf.get_size());
+        p->read_mem(buf.get_raw_ptr(), devp, buf.get_size(), destructor_flag);
       // buf.map.erase(p);
       if (free_mem_flag)
         p->free_mem(devp);
@@ -329,7 +329,7 @@ BufferContainer<T, D, A>::~BufferContainer() {
   CopybackProxy proxy;
   DEBUG_INFO("buffer destruction: %lu device(s)", map.size());
   for (auto& d : map) {
-    proxy(*this, d.first, true);
+    proxy(*this, d.first, true, true);
   }
 }
 } // namespace detail::container

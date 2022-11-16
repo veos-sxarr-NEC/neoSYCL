@@ -61,7 +61,7 @@ public:
     std::memcpy(d, h, s);
   }
 
-  void read_mem(void* h, void* d, size_t s) override {
+  void read_mem(void* h, void* d, size_t s, bool f = false) override {
     std::memcpy(h, d, s);
   }
 
