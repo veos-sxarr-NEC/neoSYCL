@@ -108,7 +108,7 @@ public:
   }
 
   int free_mem(void* p, bool destructor_flag) {
-    int rt =  veo_free_mem(proc_, (uint64_t)p);
+    int rt = veo_free_mem(proc_, (uint64_t)p);
     if (rt != VEO_COMMAND_OK) {
       PRINT_ERR("veo_free_mem() failed (%p)", p);
       if (destructor_flag != true) {
@@ -120,8 +120,14 @@ public:
 
   int call_func(uint64_t funcp, struct veo_args* argp) {
     uint64_t ret;
+    
     uint64_t id = veo_call_async(ctx_, funcp, argp);
-    int rt      = veo_call_wait_result(ctx_, id, &ret);
+    if (id == VEO_REQUEST_ID_INVALID) {
+      PRINT_ERR("veo_call_async() failed");
+      throw exception("veo_util::call_func() failed");
+    }
+
+    int rt = veo_call_wait_result(ctx_, id, &ret);
     if (rt != VEO_COMMAND_OK) {
       PRINT_ERR("veo_call_wait_result() failed (%d)", rt);
       throw exception("veo_util::call_func() failed");

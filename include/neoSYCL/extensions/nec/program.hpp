@@ -41,6 +41,7 @@ public:
     }
     catch (exception& e) {
       PRINT_ERR("kernel execution failed: %s", e.what());
+      throw exception("veo_util::call_func() failed");
     }
   }
 
