@@ -43,13 +43,11 @@ public:
     int rt = veo_context_close(ctx_);
     if (rt != veo_command_state::VEO_COMMAND_OK) {
       PRINT_ERR("veo_context_close() failed (%d)", rt);
-      throw runtime_error("veo_util::close() failed");
     }
     DEBUG_INFO("veo proc released: %lx", (size_t)proc_);
     rt = veo_proc_destroy(proc_);
     if (rt != veo_command_state::VEO_COMMAND_OK) {
       PRINT_ERR("veo_proc_destroy() failed (%d)", rt);
-      throw runtime_error("veo_util::close() failed");
     }
   }
 
