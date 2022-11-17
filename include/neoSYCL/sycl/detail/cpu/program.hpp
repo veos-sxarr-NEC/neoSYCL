@@ -49,6 +49,10 @@ public:
 
   void* alloc_mem(void* p, size_t s) override {
     void* ret = malloc(s);
+    if (ret == NULL) {
+      PRINT_ERR("alloc_mem() failed");
+      throw runtime_error("alloc_mem() failed");
+    }
     return ret;
   }
 
