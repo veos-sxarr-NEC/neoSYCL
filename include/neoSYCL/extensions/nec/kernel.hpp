@@ -14,6 +14,11 @@ public:
     capt_ = 0;
     rnge_ = 0;
     argp_ = veo_args_alloc();
+
+    if (argp_ == NULL) {
+      PRINT_ERR("kernel_data_ve() failed");
+      throw exception("kernel_data_ve::kernel_data_ve() failed");
+    }
   }
 
   ~kernel_data_ve() {
