@@ -27,7 +27,7 @@ class handler {
     }
 
     /*Unlock the next kernel*/
-    sem_post(kernel_listptr_->next->fence);
+    sem_post(kernel_listptr_->next->fence.get());
   }
 
 public:
@@ -221,7 +221,7 @@ public:
     shared_ptr_class<container_type> buf = acc.data;
 
     if (first_buf_access == 1) {
-      sem_wait(kernel_listptr_->fence);
+      sem_wait(kernel_listptr_->fence.get());
       first_buf_access = 0;
     }
 

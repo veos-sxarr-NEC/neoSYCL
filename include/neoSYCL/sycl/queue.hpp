@@ -176,7 +176,7 @@ private:
 
   /*The first kernel does not lock*/
   void first_sem_set () {
-    sem_init(head->fence, 0, 1);
+    sem_init(head->fence.get(), 0, 1);
   }
 
   /*Lock the next submitted kernel in advance*/
@@ -190,7 +190,7 @@ private:
     
     kernel_listptr = listptr;
     listptr->next = newlist;
-    sem_init(listptr->next->fence, 0, 0);
+    sem_init(listptr->next->fence.get(), 0, 0);
   }
 
   /*Free the memory of the list*/
