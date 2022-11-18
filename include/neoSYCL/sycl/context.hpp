@@ -17,6 +17,9 @@ public:
 
   ~context() = default;
 
+  friend bool operator==(const context& lhs, const context& rhs);
+  friend bool operator!=(const context& lhs, const context& rhs);
+
   context(async_handler asyncHandler, const property_list& propList = {});
 
   context(const device& dev, const property_list& propList = {}) {
@@ -58,5 +61,13 @@ private:
 
   shared_ptr_class<detail::context_impl> impl_;
 };
+
+bool operator==(const context& lhs, const context& rhs) {
+  return (lhs.impl_ == rhs.impl_);
+}
+
+bool operator!=(const context& lhs, const context& rhs) {
+  return !(lhs == rhs);
+}
 
 } // namespace neosycl::sycl
