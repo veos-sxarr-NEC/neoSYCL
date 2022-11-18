@@ -86,11 +86,10 @@ public:
 
   program_state get_state() const;
 
-  // INTERNAL USE ONLY
-  shared_ptr_class<detail::program_data> get_data(device dev) const;
-
 private:
   shared_ptr_class<detail::program_impl> impl_;
+
+  shared_ptr_class<detail::program_data> get_data(device dev) const;
 
   void init_(context c, vector_class<device> deviceList);
 };
