@@ -47,7 +47,8 @@ vector_class<device> context::get_devices() const {
 void context::init(vector_class<device> dev) {
   impl_ = nullptr;
   if (dev.size() == 0) {
-    throw runtime_error("no device for context creation");
+    DEBUG_INFO("context created with no device");
+    return;
   }
   impl_ = shared_ptr_class<detail::context_impl>(new detail::context_impl(*this));
   for (auto& d : dev) {
