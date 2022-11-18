@@ -13,7 +13,7 @@ class handler {
 
   friend class queue;
 
-  explicit handler(device d, program p, counter_type counter, kernel_list* kernel_listptr)
+  explicit handler(device d, program p, counter_type counter, std::shared_ptr<kernel_list> kernel_listptr)
       : dev_(std::move(d)), prog_(std::move(p)), cntr_(std::move(counter)),
         hndl_(prog_.get_data(dev_)), kernel_listptr_(kernel_listptr) {}
 
@@ -304,7 +304,7 @@ private:
   handler_type hndl_;
   vector_class<detail::accessor_data> acc_;
   bool first_buf_access = 1;
-  kernel_list *kernel_listptr_;
+  std::shared_ptr<kernel_list> kernel_listptr_;
 
   template <typename F, typename retT, typename argT>
   auto index_type_ptr(retT (F::*)(argT)) {

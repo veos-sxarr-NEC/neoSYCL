@@ -66,7 +66,7 @@ using cl_half   = half;
 /*List for kernel execution ordering*/
 struct kernel_list {
   std::shared_ptr<sem_t> fence;
-  struct kernel_list *next;
+  std::shared_ptr<kernel_list> next;
 
   kernel_list () {
     fence = std::shared_ptr<sem_t>(new sem_t);

@@ -160,7 +160,6 @@ public:
 
   virtual ~queue() {
     counter->wait();
-    list_free();
     delete exlist;
   }
 
@@ -171,18 +170,19 @@ private:
   exception_list* exlist = new exception_list;
   context ctx;
   program prog;
-  kernel_list *head = new kernel_list;
-  kernel_list *kernel_listptr;
+  std::shared_ptr<kernel_list> head;
+  std::shared_ptr<kernel_list> kernel_listptr;
 
   /*The first kernel does not lock*/
   void first_sem_set () {
+    head = std::shared_ptr<kernel_list>(new kernel_list); 
     sem_init(head->fence.get(), 0, 1);
   }
 
   /*Lock the next submitted kernel in advance*/
   void sem_set () {
-    kernel_list *newlist = new kernel_list;
-    kernel_list *listptr = head;
+    std::shared_ptr<kernel_list> newlist(new kernel_list());
+    std::shared_ptr<kernel_list> listptr = head;
     
     while (listptr->next) {
       listptr = listptr->next;
@@ -191,18 +191,6 @@ private:
     kernel_listptr = listptr;
     listptr->next = newlist;
     sem_init(listptr->next->fence.get(), 0, 0);
-  }
-
-  /*Free the memory of the list*/
-  void list_free() {
-    kernel_list *listptr = head;
-    kernel_list *nextptr;
-    
-    while (listptr != NULL) {
-      nextptr = listptr->next;
-      delete listptr;
-      listptr = nextptr;
-    }
   }
 };
 
