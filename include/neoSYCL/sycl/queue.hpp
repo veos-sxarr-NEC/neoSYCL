@@ -72,6 +72,9 @@ public:
 
   //  cl_command_queue get() const;
 
+  friend bool operator==(const queue& lhs, const queue& rhs);
+  friend bool operator!=(const queue& lhs, const queue& rhs);
+
   context get_context() const {
     return ctx;
   }
@@ -193,5 +196,13 @@ private:
     sem_init(listptr->next->fence.get(), 0, 0);
   }
 };
+
+bool operator==(const queue& lhs, const queue& rhs) {
+  return (lhs.ctx == rhs.ctx);
+}
+
+bool operator!=(const queue& lhs, const queue& rhs) {
+  return !(lhs == rhs);
+}
 
 } // namespace neosycl::sycl
