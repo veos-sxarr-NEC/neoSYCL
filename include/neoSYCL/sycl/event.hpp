@@ -6,7 +6,7 @@ class event {
 public:
   event() {}
 
-  explicit event(shared_ptr_class<detail::task_counter> counter, async_handler err_handler, exception_list* exlist)
+  explicit event(shared_ptr_class<detail::task_counter> counter, async_handler err_handler, shared_ptr_class<exception_list> exlist)
     : c(counter), h(err_handler), l(exlist) {}
 
   ~event() {}
@@ -29,11 +29,11 @@ public:
       return;
     }
 
-    exception_list tmp_exlist;
-    std::swap(tmp_exlist, *l);
+    shared_ptr_class<exception_list> tmp_exlist;
+    std::swap(tmp_exlist, l);
 
-    if (tmp_exlist.size()) {
-      h(std::move(tmp_exlist));
+    if (tmp_exlist.get()->size()) {
+      h(std::move(*tmp_exlist.get()));
     }
   }
 
@@ -44,7 +44,7 @@ public:
 private:
   shared_ptr_class<detail::task_counter> c;
   async_handler h;
-  exception_list* l;
+  shared_ptr_class<exception_list> l;
 };
 
 } // namespace neosycl::sycl

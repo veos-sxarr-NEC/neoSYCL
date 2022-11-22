@@ -160,14 +160,13 @@ public:
 
   virtual ~queue() {
     counter->wait();
-    delete exlist;
   }
 
 private:
   device bind_device;
   shared_ptr_class<detail::task_counter> counter;
   async_handler err_handler;
-  exception_list* exlist = new exception_list;
+  std::shared_ptr<exception_list> exlist;
   context ctx;
   program prog;
   std::shared_ptr<kernel_list> head;
@@ -181,6 +180,7 @@ private:
 
   /*Lock the next submitted kernel in advance*/
   void sem_set () {
+    exlist = std::shared_ptr<exception_list>(new exception_list);
     std::shared_ptr<kernel_list> newlist(new kernel_list());
     std::shared_ptr<kernel_list> listptr = head;
     
