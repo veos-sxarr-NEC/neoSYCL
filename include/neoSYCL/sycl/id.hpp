@@ -27,6 +27,7 @@ struct id {
       this->i_1 = range.get(1);
       this->i_2 = range.get(2);
     }
+  }
 
   id(const item<dimensions>& item) {
     if(dimensions ==1) {
