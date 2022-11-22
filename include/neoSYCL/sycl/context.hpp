@@ -12,7 +12,7 @@ class context_impl;
 class context {
 public:
   explicit context(const property_list& propList = {}) {
-    init({});
+    init({device::get_default_device()});
   }
 
   ~context() = default;
