@@ -37,6 +37,9 @@ public:
           const property_list& propList = {});
 
   //  program(const context &context, cl_program clProgram);
+  
+  friend bool operator==(const program& lhs, const program& rhs);
+  friend bool operator!=(const program& lhs, const program& rhs);
 
   /* -- common interface members -- */
   cl_program get() const {
@@ -93,5 +96,13 @@ private:
 
   void init_(context c, vector_class<device> deviceList);
 };
+
+bool operator==(const program& lhs, const program& rhs) {
+  return (lhs.impl_ == rhs.impl_);
+}
+
+bool operator!=(const program& lhs, const program& rhs) {
+  return !(lhs == rhs);
+}
 
 } // namespace neosycl::sycl
