@@ -11,6 +11,9 @@ public:
 
   ~event() {}
 
+  friend bool operator==(const event& lhs, const event& rhs);
+  friend bool operator!=(const event& lhs, const event& rhs);
+
   vector_class<event> get_wait_list() {
     throw unimplemented();
   }
@@ -46,5 +49,13 @@ private:
   async_handler h;
   shared_ptr_class<exception_list> l;
 };
+
+bool operator==(const event& lhs, const event& rhs) {
+  return (lhs.c == rhs.c);
+}
+
+bool operator!=(const event& lhs, const event& rhs) {
+  return !(lhs == rhs);
+}
 
 } // namespace neosycl::sycl
