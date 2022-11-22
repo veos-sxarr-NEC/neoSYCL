@@ -23,6 +23,9 @@ public:
   kernel(const kernel& k) : impl_(k.impl_) {}
   ~kernel() = default;
 
+  friend bool operator==(const kernel& lhs, const kernel& rhs);
+  friend bool operator!=(const kernel& lhs, const kernel& rhs);
+
   /* -- common interface members -- */
   cl_kernel get() const {
     return 0;
@@ -52,5 +55,13 @@ public:
 private:
   shared_ptr_class<detail::kernel_impl> impl_;
 };
+
+bool operator==(const kernel& lhs, const kernel& rhs) {
+  return (lhs.impl_ == rhs.impl_);
+}
+
+bool operator!=(const kernel& lhs, const kernel& rhs) {
+  return !(lhs == rhs);
+}
 
 } // namespace neosycl::sycl
