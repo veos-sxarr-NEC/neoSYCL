@@ -87,8 +87,15 @@ protected:
     for (size_t idx(0); idx != dim; idx++) {
       sz[idx] = r[idx];
     }
-    for (size_t idx(3); idx != dim + 3; idx++) {
-      sz[idx] = i[idx - 3];
+    if(dim == 1) {
+      sz[3] = i.i_0;
+    } else if(dim == 2) {
+      sz[3] = i.i_0;
+      sz[4] = i.i_1;
+    } else { // dim == 3
+      sz[3] = i.i_0;
+      sz[4] = i.i_1;
+      sz[5] = i.i_2;
     }
     set_range(k, sz);
   }

@@ -309,12 +309,12 @@ private:
     size_t x = this->accessRange.get(0);
     size_t y = this->accessRange.get(1);
     if (dimensions == 2) {
-      return index[0] + x * index[1];
+      return index.i_0 + x * index.i_1;
     }
     else if (dimensions == 3) {
-      return index[0] + x * (index[1] + y * index[2]);
+      return index.i_0 + x * (index.i_1 + y * index.i_2);
     }
-    return index[0];
+    return index.i_0;
   }
 
   void alloc_(handler& h) /* defined in handler.hpp */;

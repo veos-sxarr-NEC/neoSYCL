@@ -13,13 +13,13 @@ struct acc_ {
     return p_[i];
   }
   inline T& operator[](const id<3> i) {
-    return p_[(i[0] * r_[1] + i[1]) * r_[2] + i[2]];
+    return p_[(i.i_0 * r_[1] + i.i_1) * r_[2] + i.i_2];
   }
   inline T& operator[](const id<2> i) {
-    return p_[i[0] * r_[1] + i[1]];
+    return p_[i.i_0 * r_[1] + i.i_1];
   }
   inline T& operator[](const id<1> i) {
-    return p_[i[0]];
+    return p_[i.i_0];
   }
 
   template <int dimensions>
@@ -46,6 +46,27 @@ inline item<3> id2item(size_t s[6], size_t i0, size_t i1, size_t i2) {
   return item<3>(range<3>{s[0], s[1], s[2]},
                  detail::container::ArrayND<3>{i0, i1, i2},
                  detail::container::ArrayND<3>{s[3], s[4], s[5]});
+}
+
+inline void id2item_1_1(item<1>& itm, size_t i) {
+  itm.data[0] = i;
+}
+
+inline void id2item_2_1(item<2>& itm, size_t i) {
+  itm.data[0] = i;
+}
+inline void id2item_2_2(item<2>& itm, size_t i) {
+  itm.data[1] = i;
+}
+
+inline void id2item_3_1(item<3>& itm, size_t i) {
+  itm.data[0] = i;
+}
+inline void id2item_3_2(item<3>& itm, size_t i) {
+  itm.data[1] = i;
+}
+inline void id2item_3_3(item<3>& itm, size_t i) {
+  itm.data[2] = i;
 }
 
 } // namespace neosycl::sycl::rt
