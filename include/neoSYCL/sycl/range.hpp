@@ -14,6 +14,13 @@ struct range {
   template <int D = dimensions, typename = std::enable_if_t<D == 3>>
   range(size_t dim0, size_t dim1, size_t dim2) : data(dim0, dim1, dim2) {}
 
+  template <int LD, int RD>
+  friend bool operator==(const range<LD>& lhs, const range<RD>& rhs);
+
+  template <int LD, int RD>
+  friend bool operator!=(const range<LD>& lhs, const range<RD>& rhs);
+
+
   size_t get(int dimension) const {
     return data[dimension];
   }
@@ -108,9 +115,32 @@ struct range {
   DEFINE_OP_CONST_SIZE_T_LEFT(range, <=);
   DEFINE_OP_CONST_SIZE_T_LEFT(range, >=);
 
-  DEFINE_COMMON_BY_VALUE_SEMANTICS(range);
-
   detail::container::ArrayND<dimensions> data;
 };
+
+template <int LD, int RD>
+bool operator==(const range<LD>& lhs, const range<RD>& rhs) {
+  if (LD != RD) {
+    return false;
+  }
+
+  if (LD == 1) {
+    return (lhs.data[1] == rhs.data[1]);
+  }
+
+  if (LD == 2) {
+    return (lhs.data[1] == rhs.data[1] && lhs.data[2] == rhs.data[2]);
+  }
+
+  if (LD == 3) {
+    return (lhs.data[1] == rhs.data[1] && lhs.data[2] == rhs.data[2] && lhs.data[3] == rhs.data[3]);
+  }
+  return false;
+}
+
+template <int LD, int RD>
+bool operator!=(const range<LD>& lhs, const range<RD>& rhs) {
+  return !(lhs == rhs);
+}
 
 } // namespace neosycl::sycl
