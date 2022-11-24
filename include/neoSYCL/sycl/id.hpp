@@ -42,6 +42,10 @@ struct id {
     }
   }
 
+  template <int LD, int RD>
+  friend bool operator==(const id<LD>& lhs, const id<RD>& rhs);
+  friend bool operator!=(const id<>& lhs, const id<>& rhs);
+
   size_t get(int dimension) const {
     if(dimension ==1) { return i_0;}
     else if(dimension ==2) { return i_1;}
@@ -146,5 +150,29 @@ struct id {
   size_t i_1;
   size_t i_2;
 };
+
+template <int LD, int RD>
+bool operator==(const id<LD>& lhs, const id<RD>& rhs) {
+  if (LD != RD) {
+    return false;
+  }
+
+  if (LD == 1) {
+    return (lhs.i_0 == rhs.i_0);
+  }
+
+  if (LD == 2) {
+    return (lhs.i_0 == rhs.i_0 && lhs.i_1 == rhs.i_1);
+  }
+
+  if (LD == 3) {
+    return (lhs.i_0 == rhs.i_0 && lhs.i_1 == rhs.i_1 && lhs.i_2 == rhs.i_2);
+  }
+  return false;
+}
+
+bool operator!=(const id<>& lhs, const id<>& rhs) {
+  return !(lhs == rhs);
+}
 
 } // namespace neosycl::sycl
