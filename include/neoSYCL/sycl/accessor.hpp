@@ -30,14 +30,15 @@ public:
   accessor& operator=(const accessor& rhs) = default;
   accessor& operator=(accessor&& rhs) = default;
 
-  template <typename T, int D, access::mode M, access::target A,
-            access::placeholder P>
-  friend bool operator==(const accessor<T, D, M, A, P>& lhs,
-                         const accessor<T, D, M, A, P>& rhs);
-  template <typename T, int D, access::mode M, access::target A,
-            access::placeholder P>
-  friend bool operator!=(const accessor<T, D, M, A, P>& lhs,
-                         const accessor<T, D, M, A, P>& rhs);
+  template <typename LT, typename RT, int LD, int RD, access::mode LM, access::mode RM,
+	    access::target LA, access::target RA, access::placeholder LP, access::placeholder RP>
+  friend bool operator==(const accessor<LT, LD, LM, LA, LP>& lhs,
+                         const accessor<RT, RD, RM, RA, RP>& rhs);
+
+  template <typename LT, typename RT, int LD, int RD, access::mode LM, access::mode RM,
+	    access::target LA, access::target RA, access::placeholder LP, access::placeholder RP>
+  friend bool operator==(const accessor<LT, LD, LM, LA, LP>& lhs,
+                         const accessor<RT, RD, RM, RA, RP>& rhs);
 
 #if 0
   /* TODO: accessor of dimensions == 0 is not supported yet */
@@ -320,18 +321,26 @@ private:
   void alloc_(handler& h) /* defined in handler.hpp */;
 };
 
-template <typename T, int D, access::mode M, access::target A,
-          access::placeholder P>
-bool operator==(const accessor<T, D, M, A, P>& lhs,
-                const accessor<T, D, M, A, P>& rhs) {
-  return lhs.data == rhs.data && lhs.accessRange == rhs.accessRange &&
-         lhs.accessOffset == rhs.accessOffset;
+template <typename LT, typename RT, int LD, int RD, access::mode LM, access::mode RM,
+	  access::target LA, access::target RA, access::placeholder LP, access::placeholder RP>
+bool operator==(const accessor<LT, LD, LM, LA, LP>& lhs,
+                const accessor<RT, RD, RM, RA, RP>& rhs) {
+  if (LD != RD || LM != RM || LA != RA || LP != RP) {
+    return false;
+  }
+
+  void* ldata = lhs.data.get();
+  void* rdata = rhs.data.get();
+
+  return ldata == rdata && lhs.accessRange == rhs.accessRange &&
+       lhs.accessOffset == rhs.accessOffset;
 }
 
-template <typename T, int D, access::mode M, access::target A,
-          access::placeholder P>
-bool operator!=(const accessor<T, D, M, A, P>& lhs,
-                const accessor<T, D, M, A, P>& rhs) {
+template <typename LT, typename RT, int LD, int RD, access::mode LM, access::mode RM,
+	  access::target LA, access::target RA, access::placeholder LP, access::placeholder RP>
+bool operator!=(const accessor<LT, LD, LM, LA, LP>& lhs,
+                const accessor<RT, RD, RM, RA, RP>& rhs) {
   return !(lhs == rhs);
 }
+
 } // namespace neosycl::sycl
