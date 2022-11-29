@@ -15,6 +15,7 @@ class device;
 ///////////////////////////////////////////////////////////////////////////////
 class platform {
   friend class initial_platform_builder;
+  friend class device;
 
 public:
   platform(const platform& rhs) = default;
@@ -28,8 +29,7 @@ public:
   friend bool operator!=(const platform& lhs, const platform& rhs);
 
   // get a static platform object by default (= REGISTERED[0])
-  // explicit platform() { *this = get_default_platform(); }
-  explicit platform() : impl_(nullptr) {}
+  explicit platform() : impl_(nullptr) { *this = get_default_platform(); }
 
   explicit platform(cl_platform_id platformID) {
     throw unimplemented();
@@ -59,6 +59,10 @@ public:
   static vector_class<platform> get_platforms();
   static platform get_default_platform();
   static platform register_all_devices();
+
+protected:
+  // INTERNAL USE ONLY: create the default platform
+  explicit platform(int test) : impl_(nullptr) {}
 
 private:
   shared_ptr_class<detail::platform_impl> impl_;

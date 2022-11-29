@@ -95,13 +95,19 @@ private:
   void set_platform(platform p) {
     plt_ = p;
   }
-  explicit device(detail::device_impl* impl, platform* p = nullptr)
+  explicit device(detail::device_impl* impl, platform* p)
       : impl_(impl), plt_() {
     if (impl == nullptr) {
       DEBUG_INFO("empty device created");
     }
     else if (p != nullptr)
       plt_ = *p;
+  }
+
+  explicit device(detail::device_impl* impl) : impl_(impl), plt_(1) {
+    if (impl == nullptr) {
+      DEBUG_INFO("empty device created");
+    }
   }
 
   shared_ptr_class<detail::device_impl> impl_;
