@@ -23,6 +23,11 @@ public:
     }
     throw sycl::runtime_error("no available device found");
   }
+
+private:
+  bool is_ve() const override {
+    return 1;
+  }
 };
 
 platform platform::register_all_devices() {

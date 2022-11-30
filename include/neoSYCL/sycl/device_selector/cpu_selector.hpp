@@ -24,6 +24,11 @@ public:
     }
     throw sycl::runtime_error("no available device found");
   }
+
+private:
+  bool is_ve() const override {
+    return 0;
+  }
 };
 
 #if !defined(USE_VE) || !defined(BUILD_VE)

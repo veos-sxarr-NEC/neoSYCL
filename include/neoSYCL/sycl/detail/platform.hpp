@@ -38,6 +38,20 @@ public:
 
 using default_platform_impl = host_platform_impl;
 
+#if defined(USE_VE) && defined(BUILD_VE)
+class ve_platform_impl : public platform_impl {
+public:
+  ve_platform_impl(device d) : platform_impl(d) {}
+
+  bool is_host() override {
+    return false;
+  }
+  bool has_extension(const string_class& extension) override {
+    return false;
+  }
+};
+#endif
+
 } // namespace detail
 
 vector_class<platform> platform::REGISTERED = {
@@ -62,8 +76,15 @@ vector_class<device> platform::get_devices(info::device_type t) const {
 
 platform::platform(const device_selector& deviceSelector) {
   device d = deviceSelector.select_device();
-  impl_    = shared_ptr_class<detail::platform_impl>(
-      new detail::host_platform_impl(d));
+  if (deviceSelector.is_ve() == true) {
+    //DEBUG_INFO("deviceSelector.is_ve() == true");
+    impl_    = shared_ptr_class<detail::platform_impl>(
+        new detail::ve_platform_impl(d));
+  } else {
+    //DEBUG_INFO("deviceSelector.is_ve() == false");
+    impl_    = shared_ptr_class<detail::platform_impl>(
+        new detail::host_platform_impl(d));
+  }
   for (auto& dev : impl_->dev_)
     dev.set_platform(*this);
 }

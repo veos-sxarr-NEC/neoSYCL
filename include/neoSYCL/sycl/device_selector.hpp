@@ -17,6 +17,8 @@ public:
   virtual device select_device() const = 0;
 
   virtual int operator()(const device& device) const = 0;
+
+  virtual bool is_ve() const = 0;
 };
 
 } // namespace neosycl::sycl
