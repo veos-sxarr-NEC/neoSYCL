@@ -73,6 +73,8 @@ public:
     throw unimplemented();
   }
 
+  static vector_class<device> get_devices(info::device_type = info::device_type::all);
+
 #if 0
   // Available only when prop ==
   // info::partition_property::partition_by_affinity_domain

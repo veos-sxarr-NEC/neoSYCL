@@ -99,6 +99,13 @@ detail::program_data* device::create_program() const {
   return impl_->create_program(*this);
 }
 
+vector_class<device> device::get_devices(info::device_type t) {
+  vector_class<device> ret;
+  platform plt = platform::register_all_devices();
+  ret = plt.get_devices(t);
+  return ret;
+}
+
 template <info::device param>
 typename info::param_traits<info::device, param>::return_type
 device::get_info() const {
