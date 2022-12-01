@@ -76,6 +76,8 @@ vector_class<device> platform::get_devices(info::device_type t) const {
 
 platform::platform(const device_selector& deviceSelector) {
   device d = deviceSelector.select_device();
+
+#if defined(USE_VE) && defined(BUILD_VE)
   if (deviceSelector.is_ve() == true) {
     //DEBUG_INFO("deviceSelector.is_ve() == true");
     impl_    = shared_ptr_class<detail::platform_impl>(
@@ -85,6 +87,11 @@ platform::platform(const device_selector& deviceSelector) {
     impl_    = shared_ptr_class<detail::platform_impl>(
         new detail::host_platform_impl(d));
   }
+#else
+  impl_    = shared_ptr_class<detail::platform_impl>(
+      new detail::host_platform_impl(d));
+#endif
+
   for (auto& dev : impl_->dev_)
     dev.set_platform(*this);
 }
