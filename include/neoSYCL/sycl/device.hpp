@@ -58,7 +58,9 @@ public:
   typename info::param_traits<info::device, param>::return_type
   get_info() const;
 
-  bool has_extension(const string_class& extension) const;
+  bool has_extension(const string_class& extension) const {
+    return false;
+  }
 
   // Available only when prop == info::partition_property::partition_equally
   template <info::partition_property prop>
