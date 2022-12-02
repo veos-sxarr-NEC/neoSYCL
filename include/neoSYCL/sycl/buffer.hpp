@@ -184,8 +184,8 @@ public:
     if (ReinterpretDim > get_count())
       throw sycl::invalid_object_error("invalid dimensions");
     for (int i(0); i < ReinterpretDim; i++) {
-      if (r.bufferRage[i] >= reinterpretRange[i])
-        r.bufferRage[i] = reinterpretRange[i];
+      if (r.bufferRange[i] >= reinterpretRange[i])
+        r.bufferRange[i] = reinterpretRange[i];
       else
         throw sycl::invalid_object_error("invalid range");
     }
