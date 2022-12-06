@@ -4,6 +4,10 @@
 
 namespace neosycl::sycl {
 
+template <typename dataT, int dimension, access::mode accessMode,
+          access::target accessTarget, access::placeholder isPlaceholder>
+class accessor;
+
 namespace property {
 namespace buffer {
 class use_host_ptr {
@@ -27,6 +31,10 @@ public:
 template <typename T, int dimensions = 1,
           typename AllocatorT = buffer_allocator<T>>
 class buffer {
+template <typename dataT, int dimension, access::mode accessMode,
+          access::target accessTarget, access::placeholder isPlaceholder>
+friend class accessor;
+
 public:
   using value_type      = T;
   using reference       = value_type&;
@@ -135,13 +143,11 @@ public:
   get_access(handler& commandGroupHandler) {
     accessor<T, dimensions, mode, target> acc(*this);
     commandGroupHandler.alloc_mem_(acc);
-    copy_host2dev(mode);
     return acc;
   }
 
   template <access::mode mode>
   accessor<T, dimensions, mode, access::target::host_buffer> get_access() {
-    copy_dev2host(mode);
     return accessor<T, dimensions, mode, access::target::host_buffer>(*this);
   }
 
@@ -153,14 +159,12 @@ public:
     accessor<T, dimensions, mode, target> acc(*this, commandGroupHandler,
                                               accessRange, accessOffset);
     commandGroupHandler.alloc_mem_(acc);
-    copy_host2dev(mode);
     return acc;
   }
 
   template <access::mode mode>
   accessor<T, dimensions, mode, access::target::host_buffer>
   get_access(range<dimensions> accessRange, id<dimensions> accessOffset = {}) {
-    copy_dev2host(mode);
     return accessor<T, dimensions, mode, access::target::host_buffer>(
         *this, accessRange, accessOffset);
   }
@@ -202,6 +206,7 @@ private:
   bool first_dev_write = 1;
   int last_write_plat = 0;
 
+protected:
   void copy_host2dev(access::mode mode) {
     if (last_write_plat != 1 && first_dev_write != 1) {
       for (auto& d : data->map) {

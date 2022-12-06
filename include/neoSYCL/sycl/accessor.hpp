@@ -71,72 +71,93 @@ public:
    accessTarget == access::target::host_buffer) || (isPlaceholder ==
    access::placeholder::true_t && (accessTarget == access::target::global_buffer
    || accessTarget == access::target::constant_buffer))) && dimensions > 0 */
-  template <typename AllocatorT, int D = dimensions,
-            typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
+            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            const property_list& propList = {})
       : data(bufferRef.get_data()), accessRange(bufferRef.get_range()),
-        accessOffset(), device_ptr(nullptr) {}
+        accessOffset(), device_ptr(nullptr) {
+    if (T == access::target::host_buffer) {
+      bufferRef.copy_dev2host(Mode);
+    } else {
+      bufferRef.copy_host2dev(Mode);
+    }
+  }
 
   /* Available only when: (isPlaceholder == access::placeholder::false_t &&
    (accessTarget == access::target::global_buffer || accessTarget ==
    access::target::constant_buffer)) && dimensions > 0 */
-  template <typename AllocatorT, int D = dimensions,
-            typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
+            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            handler& commandGroupHandlerRef, const property_list& propList = {})
       : data(bufferRef.get_data()), accessRange(bufferRef.get_range()),
         accessOffset(), device_ptr(nullptr) {
     alloc_(commandGroupHandlerRef);
+    bufferRef.copy_host2dev(Mode);
   }
 
   /* Available only when: (isPlaceholder == access::placeholder::false_t &&
    accessTarget == access::target::host_buffer) || (isPlaceholder ==
   access::placeholder::true_t && (accessTarget == access::target::global_buffer
    || accessTarget == access::target::constant_buffer)) && dimensions > 0 */
-  template <typename AllocatorT, int D = dimensions,
-            typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
+            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            range<dimensions> accessRange, const property_list& propList = {})
       : data(bufferRef.get_data()), accessRange(accessRange), accessOffset(),
-        device_ptr(nullptr) {}
+        device_ptr(nullptr) {
+    if (T == access::target::host_buffer) {
+      bufferRef.copy_dev2host(Mode);
+    } else {
+      bufferRef.copy_host2dev(Mode);
+    }
+  }
 
   /* Available only when: (isPlaceholder == access::placeholder::false_t &&
    accessTarget == access::target::host_buffer) || (isPlaceholder ==
    access::placeholder::true_t && (accessTarget == access::target::global_buffer
   || accessTarget == access::target::constant_buffer)) && dimensions > 0 */
-  template <typename AllocatorT, int D = dimensions,
-            typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
+            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            range<dimensions> accessRange, id<dimensions> accessOffset,
            const property_list& propList = {})
       : data(bufferRef.get_data()), accessRange(accessRange),
-        accessOffset(accessOffset), device_ptr(nullptr) {}
+        accessOffset(accessOffset), device_ptr(nullptr) {
+    if (T == access::target::host_buffer) {
+      bufferRef.copy_dev2host(Mode);
+    } else {
+      bufferRef.copy_host2dev(Mode);
+    }
+  }
 
   /* Available only when: (isPlaceholder == access::placeholder::false_t &&
   (accessTarget == access::target::global_buffer || accessTarget ==
   access::target::constant_buffer)) && dimensions > 0 */
-  template <typename AllocatorT, int D = dimensions,
-            typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
+            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            handler& commandGroupHandlerRef, range<dimensions> accessRange,
            const property_list& propList = {})
       : data(bufferRef.get_data()), accessRange(accessRange), accessOffset(),
         device_ptr(nullptr) {
     alloc_(commandGroupHandlerRef);
+    bufferRef.copy_host2dev(Mode);
   }
 
   /* Available only when: (isPlaceholder == access::placeholder::false_t &&
   (accessTarget == access::target::global_buffer || accessTarget ==
   access::target::constant_buffer)) && dimensions > 0 */
-  template <typename AllocatorT, int D = dimensions,
-            typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
+            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            handler& commandGroupHandlerRef, range<dimensions> accessRange,
            id<dimensions> accessOffset, const property_list& propList = {})
       : data(bufferRef.get_data()), accessRange(accessRange),
         accessOffset(accessOffset), device_ptr(nullptr) {
     alloc_(commandGroupHandlerRef);
+    bufferRef.copy_host2dev(Mode);
   }
 
   /* -- common interface members -- */
