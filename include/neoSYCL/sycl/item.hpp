@@ -62,12 +62,13 @@ struct item {
 
   size_t get_linear_id() const {
     size_t idx = 0;
-    if (dimensions > 0)
+    if(dimensions == 1) {
       idx = data[0];
-    if (dimensions > 1)
-      idx = idx * max_range[0] + data[1];
-    if (dimensions > 2)
-      idx = idx * max_range[1] + data[2];
+    } else if(dimensions == 2) {
+      idx = data[0]*max_range[1]+data[1];
+    } else {
+      idx = data[0]*max_range[1]*max_range[2]+data[1]*max_range[2]+data[2];
+    }
     return idx;
   }
 
