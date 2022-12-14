@@ -93,6 +93,8 @@ static void printVarDecls(CXXRecordDecl* functor_decl, Data& data,
 static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
   const char* pragma_omp_parallel_for = "#pragma omp parallel for";
   const char* pragma_NEC_ivdep        = "#pragma _NEC ivdep\n";
+  const char* pragma_omp_parallel     = "#pragma omp parallel";
+  const char* pragma_omp_for          = "#pragma omp for\n";
 
   int dim = data.dim;
 
@@ -113,8 +115,44 @@ static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
     st << "size_t r" << i << "_ = r_[" << i << "]  ;\n";
     st << "size_t o" << i << "_ = r_[" << i + 3 << "]  ;\n";
   }
-  st << pragma_omp_parallel_for;
+
+  if (vtype == "id") {
+    st << pragma_omp_parallel_for;
+  }
+  else if(vtype == "item") {
+    st << pragma_omp_parallel;
+  }
+   else {
+    cerr << "unknown index class\n";
+    abort();
+  }
+
   st << pragma_private;
+
+  if (vtype == "id") {
+  }
+  else if(vtype == "item") {
+
+    st << "{\n";
+    if (dim == 1) {
+      st << "cl::sycl::item<1> " << vname
+         << "= cl::sycl::rt::id2item(r_,0);\n";
+    }
+    else if (dim == 2) {
+      st << "cl::sycl::item<2> " << vname
+         << "= cl::sycl::rt::id2item(r_,0,0);\n";
+    }
+    else if (dim == 3) {
+      st << "cl::sycl::item<3> " << vname
+         << "= cl::sycl::rt::id2item(r_,0,0,0);\n";
+    }
+    st << pragma_omp_for;
+  }
+  else {
+    cerr << "unknown index class\n";
+    abort();
+  }
+
   st << pragma_NEC_ivdep;
   for (int i(0); i < dim; i++) {
     st << "for(i" << i << "_";
@@ -122,26 +160,31 @@ static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
     st << "i" << i << "_";
     st << " < r" << i << "_;";
     st << "i" << i << "_++)\n";
+
+    if (vtype == "id") {
+    }
+    else if(vtype == "item") {
+      st << "{\n";
+      st << "cl::sycl::rt::id2item_" << dim << "_" << (i+1) << "(" << vname << ", i" << i << "_);\n" ;
+    }
+    else {
+      cerr << "unknown index class\n";
+      abort();
+    }
   }
   if (vtype == "id") {
-    if (dim == 1)
+    if (dim == 1) {
       st << "{ [[maybe_unused]] cl::sycl::id<1> " << vname << "(i0_);\n";
-    else if (dim == 2)
+    }
+    else if (dim == 2) {
       st << "{ [[maybe_unused]] cl::sycl::id<2> " << vname << "(i0_,i1_);\n";
-    else if (dim == 3)
+    }
+    else if (dim == 3) {
       st << "{ [[maybe_unused]] cl::sycl::id<3> " << vname
          << "(i0_,i1_,i2_);\n";
+    }
   }
   else if (vtype == "item") {
-    if (dim == 1)
-      st << "{ [[maybe_unused]] cl::sycl::item<1> " << vname
-         << "= cl::sycl::rt::id2item(r_,i0_);\n";
-    else if (dim == 2)
-      st << "{ [[maybe_unused]] cl::sycl::item<2> " << vname
-         << "= cl::sycl::rt::id2item(r_,i0_,i1_);\n";
-    else if (dim == 3)
-      st << "{ [[maybe_unused]] cl::sycl::item<3> " << vname
-         << "= cl::sycl::rt::id2item(r_,i0_,i1_,i2_);\n";
   }
   else {
     cerr << "unknown index class\n";
@@ -149,6 +192,17 @@ static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
   }
   func->getBody()->printPretty(st, &data.helper, data.policy);
 
+  if (vtype == "id") {
+  }
+  else if(vtype == "item") {
+    for (int i(0); i < dim; i++) {
+      st << "}\n";
+    }
+  }
+  else {
+    cerr << "unknown index class\n";
+    abort();
+  }
   st << "}";
 }
 
