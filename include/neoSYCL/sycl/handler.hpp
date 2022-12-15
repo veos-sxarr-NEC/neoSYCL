@@ -18,16 +18,15 @@ class handler {
         hndl_(prog_.get_data(dev_)), kernel_listptr_(kernel_listptr) {}
 
   ~handler() {
-    for (size_t i(0); i < acc_.size(); i++) {
+    //Execution order control is performed by kernel_listptr.
+    /*for (size_t i(0); i < acc_.size(); i++) {
       // DEBUG_INFO("memory unlock: %p", acc_[i].data.get());
+
       if (acc_[i].mode != access::mode::read)
         acc_[i].data->unlock_write();
       else
         acc_[i].data->unlock_read();
-    }
-
-    /*Unlock the next kernel*/
-    sem_post(kernel_listptr_->next->fence.get());
+    }*/
   }
 
 public:
@@ -260,8 +259,11 @@ public:
         if (acc_[i].data.get() == acc.data.get()) {
           if (acc_[i].mode == access::mode::read && m != access::mode::read) {
             // not sure if this is a thread-safe way...
-            acc_[i].data->unlock_read();
-            acc_[i].data->lock_write();
+	    
+	    //Execution order control is performed by kernel_listptr.
+            //acc_[i].data->unlock_read();
+            //acc_[i].data->lock_write();
+
             acc_[i].mode            = m; // this is used for unlocking
             buf->map.at(hndl_).mode = m; // this is used for buffer copy back
           }
@@ -272,10 +274,11 @@ public:
     if (i == acc_.size()) {
       // DEBUG_INFO("memory lock: %p", acc.data.get());
       acc_.push_back(detail::accessor_data(acc.data, m));
-      if (m != access::mode::read)
+      //Execution order control is performed by kernel_listptr.
+      /*if (m != access::mode::read)
         acc.data->lock_write();
       else
-        acc.data->lock_read();
+        acc.data->lock_read();*/
     }
 
     if (dev_.is_host())
