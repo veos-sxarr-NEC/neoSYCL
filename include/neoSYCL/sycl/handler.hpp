@@ -13,9 +13,9 @@ class handler {
 
   friend class queue;
 
-  explicit handler(device d, program p, counter_type counter, std::shared_ptr<kernel_list> kernel_listptr)
+  explicit handler(device d, program p, counter_type counter, std::shared_ptr<kernel_list> kernel_listptr, std::shared_ptr<sem_t> buf_sem)
       : dev_(std::move(d)), prog_(std::move(p)), cntr_(std::move(counter)),
-        hndl_(prog_.get_data(dev_)), kernel_listptr_(kernel_listptr) {}
+        hndl_(prog_.get_data(dev_)), kernel_listptr_(kernel_listptr), buf_sem_(buf_sem) {}
 
   ~handler() {
     //Execution order control is performed by kernel_listptr.
@@ -33,6 +33,7 @@ public:
   template <typename KernelName, typename KernelType, int dimensions>
   void run(range<dimensions> kernelRange, id<dimensions> kernelOffset,
            KernelType kernelFunc) {
+    sem_meet_up();
     kernel k = prog_.get_kernel<KernelName>();
     hndl_->set_range(k, kernelRange, kernelOffset);
 
@@ -44,6 +45,7 @@ public:
 
   template <typename KernelName, typename KernelType, int dimensions>
   void run(range<dimensions> kernelRange, KernelType kernelFunc) {
+    sem_meet_up();
     kernel k = prog_.get_kernel<KernelName>();
     hndl_->set_range(k, kernelRange);
 
@@ -55,6 +57,7 @@ public:
 
   template <typename KernelName, typename KernelType>
   void run(KernelType kernelFunc) {
+    sem_meet_up();
     kernel k = prog_.get_kernel<KernelName>();
 
     kernelFunc(k);
@@ -219,11 +222,6 @@ public:
     using device_ptr_type = detail::container::device_ptr_type;
     shared_ptr_class<container_type> buf = acc.data;
 
-    if (first_buf_access == 1) {
-      sem_wait(kernel_listptr_->fence.get());
-      first_buf_access = 0;
-    }
-
     // allocate a device memory chunk if not allocated yet
     int count = 0;
     if (dev_.is_host() == false) {
@@ -306,8 +304,8 @@ private:
   counter_type cntr_;
   handler_type hndl_;
   vector_class<detail::accessor_data> acc_;
-  bool first_buf_access = 1;
   std::shared_ptr<kernel_list> kernel_listptr_;
+  std::shared_ptr<sem_t> buf_sem_;
 
   template <typename F, typename retT, typename argT>
   auto index_type_ptr(retT (F::*)(argT)) {
@@ -322,6 +320,13 @@ private:
   template <typename KernelType>
   auto get_index_type(const KernelType&) {
     return index_type_ptr_(&KernelType::operator());
+  }
+
+  void sem_meet_up() {
+    //Wake the main thread
+    sem_post(buf_sem_.get());
+    //Wait for the previous kernel execution to finish
+    sem_wait(kernel_listptr_->fence.get());
   }
 };
 

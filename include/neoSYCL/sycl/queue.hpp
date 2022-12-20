@@ -95,9 +95,9 @@ public:
   event submit(T cgf) {
     sem_set();
     counter->incr();
-    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, k = kernel_listptr, l = exlist]() {
+    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, k = kernel_listptr, l = exlist, s = buf_sem]() {
       try {
-        handler command_group_handler(d, p, c, k);
+        handler command_group_handler(d, p, c, k, s);
         f(command_group_handler);
       }
       catch (std::exception& e) {
@@ -111,6 +111,7 @@ public:
       c->decr();
     });
     t.detach();
+    sem_wait(buf_sem.get());
     return event(counter, err_handler, exlist);
   }
 #else
@@ -174,14 +175,17 @@ private:
   program prog;
   std::shared_ptr<kernel_list> head;
   std::shared_ptr<kernel_list> kernel_listptr;
+  std::shared_ptr<sem_t> buf_sem;
 
-  /*The first kernel does not lock*/
+  /*The first kernel does not lock and allocate buffer access wait sem*/
   void first_sem_set () {
     head = std::shared_ptr<kernel_list>(new kernel_list); 
     sem_init(head->fence.get(), 0, 1);
+
+    buf_sem = std::shared_ptr<sem_t>(new sem_t);
   }
 
-  /*Lock the next submitted kernel in advance*/
+  /*Lock the next submitted kernel in advance and lock buffer access wait sem*/
   void sem_set () {
     exlist = std::shared_ptr<exception_list>(new exception_list);
     std::shared_ptr<kernel_list> newlist(new kernel_list());
@@ -194,6 +198,8 @@ private:
     kernel_listptr = listptr;
     listptr->next = newlist;
     sem_init(listptr->next->fence.get(), 0, 0);
+
+    sem_init(buf_sem.get(), 0, 0);
   }
 };
 
