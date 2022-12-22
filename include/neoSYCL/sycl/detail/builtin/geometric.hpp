@@ -64,7 +64,7 @@ float fast_length(const vec<float, D> p) {
 }
 template <int D>
 vec<float, D> fast_normalize(const vec<float, D> p) {
-  vec<float, D> r = 0;
+  /*vec<float, D> r = 0;
   float sum       = 0;
   for (int i(0); i < D; i++) {
     sum += p[i] * p[i];
@@ -73,7 +73,9 @@ vec<float, D> fast_normalize(const vec<float, D> p) {
   for (int i(0); i < D; i++) {
     r = p[i] * rlen;
   }
-  return r;
+  return r;*/
+
+  return normalize(p);
 }
 
 } // namespace neosycl::sycl
