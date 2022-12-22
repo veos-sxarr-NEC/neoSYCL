@@ -38,10 +38,10 @@ T length(const vec<T, D> p) {
 }
 template <typename T, int D>
 vec<T, D> normalize(const vec<T, D> p) {
-  vec<T, D> r = 0;
+  vec<T, D> r;
   T len       = length(p);
   for (int i(0); i < D; i++) {
-    r = p[i] / len;
+    r[i] = p[i] / len;
   }
   return r;
 }
