@@ -173,20 +173,12 @@ template <typename T>
 int ilogb(const T& x) {
   return std::ilogb(x);
 }
-template <typename T>
-int logb(const T& x) {
-  return ilogb(x);
-}
 template <typename T, int D>
 vec<int, D> ilogb(const vec<T, D>& x) {
   vec<int, D> R;
   for (int i(0); i < D; i++)
     R[i] = ilogb(x[i]);
   return R;
-}
-template <typename T, int D>
-vec<int, D> logb(const vec<T, D>& x) {
-  return ilobg(x);
 }
 
 // DEFINE_GEN_FUNC2(ldexp,  *);
