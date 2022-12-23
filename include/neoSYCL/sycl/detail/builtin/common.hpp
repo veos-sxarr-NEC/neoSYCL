@@ -11,6 +11,25 @@ T degrees(T i) {
   return i * 180 / M_PI;
 }
 template <typename T>
+T abs(T x, T y) {
+  T x_abs;
+  T y_abs;
+
+  if(x > 0) {
+    x_abs = x;
+  } else {
+    x_abs = -x;
+  }
+
+  if(y > 0) {
+    y_abs = y;
+  } else {
+    y_abs = -y;
+  }
+
+  return x_abs < y_abs ? y_abs : x_abs;
+}
+template <typename T>
 T mix(T x, T y, T z) {
   return (x * z + (1 - z) * y);
 }
@@ -50,6 +69,15 @@ vec<T, D> clamp(vec<T, D> x, T y, T z) {
 }
 
 DEFINE_GEN_FUNC(degrees, detail::degrees);
+
+DEFINE_GEN_FUNC2(abs, detail::abs);
+template <typename T, int D>
+vec<T, D> abs(vec<T, D> x, T y) {
+  vec<T, D> ret;
+  for (int i(0); i < D; i++)
+    ret[i] = detail::abs(x[i], y);
+  return ret;
+}
 
 DEFINE_GEN_FUNC2(max, detail::max);
 template <typename T, int D>
