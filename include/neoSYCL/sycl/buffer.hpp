@@ -182,17 +182,20 @@ public:
   }
 
   template <typename ReinterpretT, int ReinterpretDim>
-  buffer<ReinterpretT, ReinterpretDim, AllocatorT>
+  buffer<ReinterpretT, ReinterpretDim, buffer_allocator<ReinterpretT>>
   reinterpret(range<ReinterpretDim> reinterpretRange) const {
-    buffer<ReinterpretT, ReinterpretDim, AllocatorT> r(*this);
-    if (ReinterpretDim > get_count())
-      throw sycl::invalid_object_error("invalid dimensions");
-    for (int i(0); i < ReinterpretDim; i++) {
-      if (r.bufferRange[i] >= reinterpretRange[i])
-        r.bufferRange[i] = reinterpretRange[i];
-      else
-        throw sycl::invalid_object_error("invalid range");
+    using unsigned_PT = typename std::make_unsigned<value_type>::type;
+    int P_digit = std::numeric_limits<unsigned_PT>::digits;
+
+    using unsigned_CT = typename std::make_unsigned<ReinterpretT>::type;
+    int C_digit = std::numeric_limits<unsigned_CT>::digits;
+
+    if (P_digit*bufferRange.size() != C_digit*reinterpretRange.size()) {
+      throw sycl::invalid_object_error("invalid size");
     }
+
+    buffer<ReinterpretT, ReinterpretDim> r(reinterpret_cast<ReinterpretT*>(data->get_ptr()), reinterpretRange);
+
     return r;
   }
 
