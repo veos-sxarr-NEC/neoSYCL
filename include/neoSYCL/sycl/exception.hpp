@@ -8,17 +8,26 @@ class context;
 class exception : public std::exception {
 public:
   exception(const string_class& message) : error_msg(message) {}
+  exception(const string_class& message, context* err_ctx) : error_msg(message), ctx(err_ctx) {}
 
   const char* what() const noexcept override {
     return error_msg.c_str();
   }
 
-  bool has_context() const;
+  bool has_context() const {
+    return ctx != nullptr;
+  };
 
-  context get_context() const;
+  context* get_context() const {
+    if (has_context() != true) {
+      throw exception("get_context() failed");
+    }
+    return ctx;
+  };
 
 private:
   string_class error_msg;
+  context* ctx = nullptr;
 };
 
 //using exception_list = vector_class<exception_ptr_class>;
