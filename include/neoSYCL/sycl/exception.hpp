@@ -18,12 +18,7 @@ public:
     return ctx != nullptr;
   };
 
-  context* get_context() const {
-    if (has_context() != true) {
-      throw exception("get_context() failed");
-    }
-    return ctx;
-  };
+  context test() const;
 
 private:
   string_class error_msg;

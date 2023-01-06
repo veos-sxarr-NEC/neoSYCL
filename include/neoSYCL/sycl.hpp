@@ -27,6 +27,7 @@
 #include "neoSYCL/sycl/detail/device.hpp"
 #include "neoSYCL/sycl/detail/context.hpp"
 #include "neoSYCL/sycl/detail/platform.hpp"
+#include "neoSYCL/sycl/detail/exception.hpp"
 
 #include "sycl/device_selector/cpu_selector.hpp"
 #ifdef BUILD_VE
