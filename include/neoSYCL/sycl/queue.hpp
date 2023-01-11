@@ -103,10 +103,12 @@ public:
       catch (std::exception& e) {
         PRINT_ERR("%s", e.what());
 	l->pushback(std::current_exception());
+	sem_post(s.get());
       }
       catch (...) {
         PRINT_ERR("unknown exception");
         l->pushback(std::current_exception());
+	sem_post(s.get());
       }
       c->decr();
     });
