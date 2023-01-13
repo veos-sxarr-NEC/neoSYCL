@@ -18,7 +18,7 @@ public:
     return ctx != nullptr;
   };
 
-  context test() const;
+  context get_context() const;
 
 private:
   string_class error_msg;
