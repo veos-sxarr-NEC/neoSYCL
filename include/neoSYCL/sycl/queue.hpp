@@ -95,13 +95,15 @@ public:
   event submit(T cgf) {
     sem_set();
     counter->incr();
-    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, k = kernel_listptr, l = exlist, s = buf_sem]() {
+    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, k = kernel_listptr, l = exlist, s = buf_sem, ct = ctx]() {
       try {
         handler command_group_handler(d, p, c, k, s);
         f(command_group_handler);
       }
-      catch (std::exception& e) {
+      catch (exception& e) {
         PRINT_ERR("%s", e.what());
+	context tmp_ctx = ct;
+	e.ctx = &tmp_ctx;
 	l->pushback(std::current_exception());
 	sem_post(s.get());
       }

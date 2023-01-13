@@ -4,9 +4,11 @@
 namespace neosycl::sycl {
 
 class context;
+class queue;
 
 class exception : public std::exception {
 public:
+  friend class queue;
   exception(const string_class& message) : error_msg(message) {}
   exception(const string_class& message, context* err_ctx) : error_msg(message), ctx(err_ctx) {}
 
@@ -22,6 +24,8 @@ public:
 
 private:
   string_class error_msg;
+
+protected:
   context* ctx = nullptr;
 };
 
