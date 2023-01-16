@@ -10,7 +10,8 @@ class queue {
 public:
   explicit queue(const property_list& propList = {})
       : bind_device(device::get_default_device()),
-        counter(new detail::task_counter()), ctx(bind_device), prog(ctx) {
+        counter(new detail::task_counter()), ctx(bind_device), prog(ctx),
+	ctx_ptr(new context(ctx)) {
     first_sem_set();
   }
 
@@ -18,14 +19,15 @@ public:
                  const property_list& propList = {})
       : bind_device(device::get_default_device()),
         counter(new detail::task_counter()), err_handler(asyncHandler),
-        ctx(bind_device), prog(ctx) {
+        ctx(bind_device), prog(ctx), ctx_ptr(new context(ctx)) {
     first_sem_set();
   }
 
   explicit queue(const device_selector& deviceSelector,
                  const property_list& propList = {})
       : bind_device(deviceSelector.select_device()),
-        counter(new detail::task_counter()), ctx(bind_device), prog(ctx) {
+        counter(new detail::task_counter()), ctx(bind_device), prog(ctx),
+        ctx_ptr(new context(ctx)) {
     first_sem_set();
   }
 
@@ -34,20 +36,21 @@ public:
                  const property_list& propList = {})
       : bind_device(deviceSelector.select_device()),
         counter(new detail::task_counter()), err_handler(asyncHandler),
-        ctx(bind_device), prog(ctx) {
+        ctx(bind_device), prog(ctx), ctx_ptr(new context(ctx)) {
     first_sem_set();
   }
 
   explicit queue(const device& syclDevice, const property_list& propList = {})
       : bind_device(syclDevice), counter(new detail::task_counter()),
-        ctx(bind_device), prog(ctx) {
+        ctx(bind_device), prog(ctx), ctx_ptr(new context(ctx)) {
     first_sem_set();
   }
 
   explicit queue(const device& syclDevice, const async_handler& asyncHandler,
                  const property_list& propList = {})
       : bind_device(syclDevice), counter(new detail::task_counter()),
-        err_handler(asyncHandler), ctx(bind_device), prog(ctx) {
+        err_handler(asyncHandler), ctx(bind_device), prog(ctx),
+        ctx_ptr(new context(ctx)) {
     first_sem_set();
   }
 
@@ -95,15 +98,14 @@ public:
   event submit(T cgf) {
     sem_set();
     counter->incr();
-    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, k = kernel_listptr, l = exlist, s = buf_sem, ct = ctx]() {
+    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, k = kernel_listptr, l = exlist, s = buf_sem, ct = ctx_ptr]() {
       try {
         handler command_group_handler(d, p, c, k, s);
         f(command_group_handler);
       }
       catch (exception& e) {
         PRINT_ERR("%s", e.what());
-	context tmp_ctx = ct;
-	e.ctx = &tmp_ctx;
+	e.ctx = ct;
 	l->pushback(std::current_exception());
 	sem_post(s.get());
       }
@@ -176,6 +178,7 @@ private:
   async_handler err_handler;
   std::shared_ptr<exception_list> exlist;
   context ctx;
+  std::shared_ptr<context> ctx_ptr;
   program prog;
   std::shared_ptr<kernel_list> head;
   std::shared_ptr<kernel_list> kernel_listptr;

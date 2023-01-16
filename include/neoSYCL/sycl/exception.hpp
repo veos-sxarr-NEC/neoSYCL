@@ -10,14 +10,14 @@ class exception : public std::exception {
 public:
   friend class queue;
   exception(const string_class& message) : error_msg(message) {}
-  exception(const string_class& message, context* err_ctx) : error_msg(message), ctx(err_ctx) {}
+  exception(const string_class& message, context* err_ctx);
 
   const char* what() const noexcept override {
     return error_msg.c_str();
   }
 
   bool has_context() const {
-    return ctx != nullptr;
+    return ctx.get() != nullptr;
   };
 
   context get_context() const;
@@ -26,7 +26,7 @@ private:
   string_class error_msg;
 
 protected:
-  context* ctx = nullptr;
+  std::shared_ptr<context> ctx = nullptr;
 };
 
 //using exception_list = vector_class<exception_ptr_class>;
