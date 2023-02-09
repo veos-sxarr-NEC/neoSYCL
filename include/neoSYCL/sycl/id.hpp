@@ -47,21 +47,21 @@ struct id {
   friend bool operator!=(const id<>& lhs, const id<>& rhs);
 
   size_t get(int dimension) const {
-    if(dimension ==1) { return i_0;}
-    else if(dimension ==2) { return i_1;}
-    else { return i_2;} // dimension ==3
+    if(dimension ==0) { return i_0;}
+    else if(dimension ==1) { return i_1;}
+    else { return i_2;} // dimension ==2
   }
 
   size_t& operator[](int dimension) {
-    if(dimension ==1) { return i_0;}
-    else if(dimension ==2) { return i_1;}
-    else { return i_2;} // dimension ==3
+    if(dimension ==0) { return i_0;}
+    else if(dimension ==1) { return i_1;}
+    else { return i_2;} // dimension ==2
   }
 
   size_t operator[](int dimension) const {
-    if(dimension ==1) { return i_0;}
-    else if(dimension ==2) { return i_1;}
-    else { return i_2;} // dimension ==3
+    if(dimension ==0) { return i_0;}
+    else if(dimension ==1) { return i_1;}
+    else { return i_2;} // dimension ==2
   }
 
 #if 0
