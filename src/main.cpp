@@ -26,7 +26,7 @@ public:
 
 class KoutASTConsumer : public ASTConsumer {
 public:
-  KoutASTConsumer(CompilerInstance& ci)
+  explicit KoutASTConsumer(CompilerInstance& ci)
       : rew_(), vis_(rew_, ci.getASTContext()) {
     rew_.setSourceMgr(ci.getSourceManager(), ci.getLangOpts());
   }
