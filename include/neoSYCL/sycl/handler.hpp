@@ -226,9 +226,13 @@ public:
     int count = 0;
     if (dev_.is_host() == false) {
       count = buf->map.count(hndl_);
-      if (count == 1)
+      if (count == 1) {
         // multiple accessors would use the same buffer
         acc.device_ptr = buf->map.at(hndl_).ptr;
+        if(m != access::mode::read) {
+          buf->map.at(hndl_).mode = m;
+        }
+      }
       else if (count == 0) {
         void* dp = hndl_->alloc_mem(buf->get_raw_ptr(), buf->get_size());
         device_ptr_type cdp = {dp, m};
