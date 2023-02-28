@@ -79,7 +79,7 @@ T sinpi(T i) {
 }
 template <typename T>
 T tanpi(T i) {
-  return std::tan(i) / M_PI;
+  return std::tan((T) (M_PI * i));
 }
 
 } // namespace detail
