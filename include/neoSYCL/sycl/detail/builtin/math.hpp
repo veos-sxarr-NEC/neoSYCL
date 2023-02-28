@@ -71,7 +71,7 @@ T rootn(T x, int i) {
 }
 template <typename T>
 T rsqrt(T i) {
-  return std::sqrt(-i);
+  return 1/std::sqrt(i);
 }
 template <typename T>
 T sinpi(T i) {
