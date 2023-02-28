@@ -75,7 +75,7 @@ T rsqrt(T i) {
 }
 template <typename T>
 T sinpi(T i) {
-  return std::sin(i) / M_PI;
+  return std::sin(M_PI * i);
 }
 template <typename T>
 T tanpi(T i) {
