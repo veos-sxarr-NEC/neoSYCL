@@ -187,10 +187,10 @@ T ldexp(const T& x, const int& y) {
   return x * (1 << y);
 }
 template <typename T, int D>
-vec<T, D> ldexp(const vec<T, D>& x, const int& y) {
-  vec<int, D> R;
+vec<T, D> ldexp(const vec<T, D>& x, const vec<int, D>& y) {
+  vec<T, D> R;
   for (int i(0); i < D; i++)
-    R[i] = ldexp(x[i], y);
+    R[i] = ldexp(x[i], y[i]);
   return R;
 }
 
