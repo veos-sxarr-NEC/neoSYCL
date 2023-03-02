@@ -201,7 +201,7 @@ T lgamma_r(const T& x, int* y) {
   vec<int, D> R;
   for (int i(0); i < D; i++) {
     R[i] = lgamma(x[i]);
-    *y   = R[i] > 0 ? 0 : 1;
+    *y   = R[i] < 0 ? 0 : 1;
   }
   return R;
 }
@@ -211,6 +211,16 @@ T lgamma_r(const vec<T, D>& x, int* y) {
   vec<int, D> R;
   for (int i(0); i < D; i++)
     R[i] = lgamma_r(x[i], &y[i]);
+  return R;
+}
+
+template <typename T, int D>
+vec<T, D> lgamma_r(const vec<T, D>& x, vec<int, D>& y) {
+  vec<T, D> R;
+  for (int i(0); i < D; i++) {
+    R[i] = lgamma(x[i]);
+    y[i] = R[i] < 0 ? 1 : 0;
+  }
   return R;
 }
 
