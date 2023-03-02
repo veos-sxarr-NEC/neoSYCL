@@ -274,10 +274,11 @@ T pown(T x, int y) {
   return pow(x, T((float)y));
 }
 template <typename T, int D>
-vec<T, D> pown(const vec<T, D>& x, int y) {
+vec<T, D> pown(const vec<T, D>& x, const vec<int, D>& y) {
   vec<T, D> R;
   for (int i(0); i < D; i++)
-    R[i] = pown(x[i], y);
+    R[i] = pown(x[i], y[i]);
+  return R;
 }
 DEFINE_GEN_FUNC2(powr, detail::powr);
 DEFINE_GEN_FUNC(recip, detail::recip);
