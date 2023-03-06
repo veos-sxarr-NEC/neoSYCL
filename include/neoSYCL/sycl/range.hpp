@@ -125,15 +125,15 @@ bool operator==(const range<LD>& lhs, const range<RD>& rhs) {
   }
 
   if (LD == 1) {
-    return (lhs.data[1] == rhs.data[1]);
+    return (lhs.data[0] == rhs.data[0]);
   }
 
   if (LD == 2) {
-    return (lhs.data[1] == rhs.data[1] && lhs.data[2] == rhs.data[2]);
+    return (lhs.data[0] == rhs.data[0] && lhs.data[1] == rhs.data[1]);
   }
 
   if (LD == 3) {
-    return (lhs.data[1] == rhs.data[1] && lhs.data[2] == rhs.data[2] && lhs.data[3] == rhs.data[3]);
+    return (lhs.data[0] == rhs.data[0] && lhs.data[1] == rhs.data[1] && lhs.data[2] == rhs.data[2]);
   }
   return false;
 }
