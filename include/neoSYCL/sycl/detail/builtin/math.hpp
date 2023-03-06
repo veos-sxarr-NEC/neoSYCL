@@ -301,10 +301,10 @@ T rootn(T x, int y) {
   return detail::rootn(x, y);
 }
 template <typename T, int D>
-vec<T, D> rootn(const vec<T, D>& x, int y) {
+vec<T, D> rootn(const vec<T, D>& x, const vec<int, D>& y) {
   vec<T, D> R;
   for (int i(0); i < D; i++)
-    R[i] = rootn(x[i], y);
+    R[i] = rootn(x[i], y[i]);
   return R;
 }
 
