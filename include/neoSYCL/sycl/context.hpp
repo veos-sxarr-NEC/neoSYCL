@@ -20,14 +20,20 @@ public:
   friend bool operator==(const context& lhs, const context& rhs);
   friend bool operator!=(const context& lhs, const context& rhs);
 
-  context(async_handler asyncHandler, const property_list& propList = {});
+  context(async_handler asyncHandler, const property_list& propList = {})
+      : ahandl_(asyncHandler) {
+    init({device::get_default_device()});
+  }
 
   context(const device& dev, const property_list& propList = {}) {
     init({dev});
   }
 
   context(const device& dev, async_handler asyncHandler,
-          const property_list& propList = {});
+          const property_list& propList = {}) 
+      : ahandl_(asyncHandler) {
+    init({dev});
+  }
 
   context(const platform& plt, const property_list& propList = {});
 
@@ -60,6 +66,7 @@ private:
   void init(vector_class<device>);
 
   shared_ptr_class<detail::context_impl> impl_;
+  async_handler ahandl_;
 };
 
 bool operator==(const context& lhs, const context& rhs) {
