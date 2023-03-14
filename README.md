@@ -40,11 +40,19 @@ The SYCL source file needs to be compiled using the `nsc++` compiler wrapper.
 nsc++ [source file]
 ./a.out
 
-- nsc++ use kout command to generate host code and device code.
+- nsc++ use kout command to generate host code and device code. The device
+  code include the kernel routine.
 - The host code works on VH and the device code works on VE.
 - g++ compiles the host code and makes a.out.
 - nc++ compiles the device code and transforms it into kernel-ve.so that is
   executed on VE through AVEO.
+
+The device code which includes kernel routine can be executed on VH too.
+In this case the nsc++ command requires "--device cpu" to be specified
+as follows and the device code is compiled by g++.
+
+nsc++ --device cpu [source file]
+./a.out
 
 ## Example
 
