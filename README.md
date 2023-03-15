@@ -37,8 +37,10 @@ options, respectively.
 
 The SYCL source file needs to be compiled using the `nsc++` compiler wrapper. 
 
+```
 nsc++ [source file]
 ./a.out
+```
 
 - nsc++ use kout command to generate host code and device code. The device
   code include the kernel routine.
@@ -51,13 +53,18 @@ The device code which includes kernel routine can be executed on VH too.
 In this case the nsc++ command requires "--device cpu" to be specified
 as follows and the device code is compiled by g++.
 
+```
 nsc++ --device cpu [source file]
 ./a.out
+```
 
 ## Example
 
-A simple example code of neoSYCL is as follows.
+A simple example of neoSYCL is as follows.
 
+- Source code
+
+```
 #include <CL/sycl.hpp>
 #include <vector>
 #include <iostream>
@@ -116,3 +123,18 @@ int main()
         std::cout << std::showpoint << "A.back=" << A.back()  << std::endl;
 
 }
+```
+
+- Compile
+
+```
+$ nsc++ test.cpp
+```
+
+- Execution
+
+```
+$ ./a.out
+A.front=3.00000
+A.back=750000.
+```
