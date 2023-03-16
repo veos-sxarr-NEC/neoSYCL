@@ -47,7 +47,7 @@ int clz(const T& x) {
 template <typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
 T mul_hi(const T& i, const T& j) {
   using uT          = typename std::make_unsigned<T>::type;
-  constexpr uT mask = ((~(unsigned int)(1)) << (sizeof(T) * 4));
+  constexpr uT mask = ((~(unsigned int)(0)) << (sizeof(T) * 4));
   return (mask & (i * j));
 }
 template <typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
