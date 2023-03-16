@@ -198,19 +198,17 @@ DEFINE_GEN_FUNC(lgamma, std::lgamma);
 // DEFINE_GEN_FUNC2(lgamma_r,  *);
 template <typename T, int D>
 T lgamma_r(const T& x, int* y) {
-  vec<int, D> R;
-  for (int i(0); i < D; i++) {
-    R[i] = lgamma(x[i]);
-    *y   = R[i] < 0 ? 0 : 1;
-  }
+  T R;
+  R = lgamma(x);
+  *y   = R < 0 ? 0 : 1;
   return R;
 }
 
 template <typename T, int D>
-T lgamma_r(const vec<T, D>& x, int* y) {
-  vec<int, D> R;
+vec<T, D> lgamma_r(const vec<T, D>& x, int* y) {
+  vec<T, D> R;
   for (int i(0); i < D; i++)
-    R[i] = lgamma_r(x[i], &y[i]);
+    R[i] = lgamma_r(x[i], y);
   return R;
 }
 
