@@ -30,6 +30,9 @@ class handler {
       else
         acc_[i].data->unlock_read();
     }*/
+
+    /*Unlock the next kernel*/
+    sem_post(kernel_listptr_->next->fence.get());
   }
 
 public:
