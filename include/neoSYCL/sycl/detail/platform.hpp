@@ -79,16 +79,17 @@ platform::platform(const device_selector& deviceSelector) {
 
 #if defined(USE_VE) && defined(BUILD_VE)
   if (deviceSelector.is_ve() == true) {
-    //DEBUG_INFO("deviceSelector.is_ve() == true");
-    impl_    = shared_ptr_class<detail::platform_impl>(
+    // DEBUG_INFO("deviceSelector.is_ve() == true");
+    impl_ = shared_ptr_class<detail::platform_impl>(
         new detail::ve_platform_impl(d));
-  } else {
-    //DEBUG_INFO("deviceSelector.is_ve() == false");
-    impl_    = shared_ptr_class<detail::platform_impl>(
+  }
+  else {
+    // DEBUG_INFO("deviceSelector.is_ve() == false");
+    impl_ = shared_ptr_class<detail::platform_impl>(
         new detail::host_platform_impl(d));
   }
 #else
-  impl_    = shared_ptr_class<detail::platform_impl>(
+  impl_ = shared_ptr_class<detail::platform_impl>(
       new detail::host_platform_impl(d));
 #endif
 

@@ -37,7 +37,7 @@ public:
           const property_list& propList = {});
 
   //  program(const context &context, cl_program clProgram);
-  
+
   friend bool operator==(const program& lhs, const program& rhs);
   friend bool operator!=(const program& lhs, const program& rhs);
 

@@ -32,9 +32,9 @@ private:
 };
 
 #if !defined(USE_VE) || !defined(BUILD_VE)
-  using default_selector = cpu_selector;
+using default_selector = cpu_selector;
 #endif
 
-using host_selector    = cpu_selector;
+using host_selector = cpu_selector;
 
 } // namespace neosycl::sycl

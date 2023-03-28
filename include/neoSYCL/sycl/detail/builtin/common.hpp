@@ -15,15 +15,17 @@ T abs(T x, T y) {
   T x_abs;
   T y_abs;
 
-  if(x > 0) {
+  if (x > 0) {
     x_abs = x;
-  } else {
+  }
+  else {
     x_abs = -x;
   }
 
-  if(y > 0) {
+  if (y > 0) {
     y_abs = y;
-  } else {
+  }
+  else {
     y_abs = -y;
   }
 

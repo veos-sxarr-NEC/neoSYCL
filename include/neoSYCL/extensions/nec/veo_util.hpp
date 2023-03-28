@@ -120,7 +120,7 @@ public:
 
   int call_func(uint64_t funcp, struct veo_args* argp) {
     uint64_t ret;
-    
+
     uint64_t id = veo_call_async(ctx_, funcp, argp);
     if (id == VEO_REQUEST_ID_INVALID) {
       PRINT_ERR("veo_call_async() failed");

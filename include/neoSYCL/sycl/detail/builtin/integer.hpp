@@ -88,46 +88,52 @@ T popcount(const T& x) {
   }
   return nzb;
 }
-template <typename T, typename = std::enable_if_t<std::is_integral<T>::value &&
-std::numeric_limits<T>::digits==8>>
+template <typename T,
+          typename = std::enable_if_t<std::is_integral<T>::value &&
+                                      std::numeric_limits<T>::digits == 8>>
 unsigned short upsample(const T& i, const T& j) {
   using unsigned_T = typename std::make_unsigned<T>::type;
-  int digit = std::numeric_limits<unsigned_T>::digits;
+  int digit        = std::numeric_limits<unsigned_T>::digits;
   return (static_cast<unsigned short>(i) << digit) | j;
 }
-template <typename T, typename = std::enable_if_t<std::is_integral<T>::value &&
-std::numeric_limits<T>::digits==7>>
+template <typename T,
+          typename = std::enable_if_t<std::is_integral<T>::value &&
+                                      std::numeric_limits<T>::digits == 7>>
 short upsample(const T& i, const T& j) {
   using unsigned_T = typename std::make_unsigned<T>::type;
-  int digit = std::numeric_limits<unsigned_T>::digits;
+  int digit        = std::numeric_limits<unsigned_T>::digits;
   return (static_cast<short>(i) << digit) | j;
 }
-template <typename T, typename = std::enable_if_t<std::is_integral<T>::value &&
-std::numeric_limits<T>::digits==16>>
+template <typename T,
+          typename = std::enable_if_t<std::is_integral<T>::value &&
+                                      std::numeric_limits<T>::digits == 16>>
 unsigned int upsample(const T& i, const T& j) {
   using unsigned_T = typename std::make_unsigned<T>::type;
-  int digit = std::numeric_limits<unsigned_T>::digits;
+  int digit        = std::numeric_limits<unsigned_T>::digits;
   return (static_cast<unsigned int>(i) << digit) | j;
 }
-template <typename T, typename = std::enable_if_t<std::is_integral<T>::value &&
-std::numeric_limits<T>::digits==15>>
+template <typename T,
+          typename = std::enable_if_t<std::is_integral<T>::value &&
+                                      std::numeric_limits<T>::digits == 15>>
 int upsample(const T& i, const T& j) {
   using unsigned_T = typename std::make_unsigned<T>::type;
-  int digit = std::numeric_limits<unsigned_T>::digits;
+  int digit        = std::numeric_limits<unsigned_T>::digits;
   return (static_cast<int>(i) << digit) | j;
 }
-template <typename T, typename = std::enable_if_t<std::is_integral<T>::value &&
-std::numeric_limits<T>::digits==32>>
+template <typename T,
+          typename = std::enable_if_t<std::is_integral<T>::value &&
+                                      std::numeric_limits<T>::digits == 32>>
 unsigned long long upsample(const T& i, const T& j) {
   using unsigned_T = typename std::make_unsigned<T>::type;
-  int digit = std::numeric_limits<unsigned_T>::digits;
+  int digit        = std::numeric_limits<unsigned_T>::digits;
   return (static_cast<unsigned long long>(i) << digit) | j;
 }
-template <typename T, typename = std::enable_if_t<std::is_integral<T>::value &&
-std::numeric_limits<T>::digits==31>>
+template <typename T,
+          typename = std::enable_if_t<std::is_integral<T>::value &&
+                                      std::numeric_limits<T>::digits == 31>>
 long long upsample(const T& i, const T& j) {
   using unsigned_T = typename std::make_unsigned<T>::type;
-  int digit = std::numeric_limits<unsigned_T>::digits;
+  int digit        = std::numeric_limits<unsigned_T>::digits;
   return (static_cast<long long>(i) << digit) | j;
 }
 }; // namespace detail

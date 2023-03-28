@@ -20,7 +20,6 @@ struct range {
   template <int LD, int RD>
   friend bool operator!=(const range<LD>& lhs, const range<RD>& rhs);
 
-
   size_t get(int dimension) const {
     return data[dimension];
   }
@@ -133,7 +132,8 @@ bool operator==(const range<LD>& lhs, const range<RD>& rhs) {
   }
 
   if (LD == 3) {
-    return (lhs.data[0] == rhs.data[0] && lhs.data[1] == rhs.data[1] && lhs.data[2] == rhs.data[2]);
+    return (lhs.data[0] == rhs.data[0] && lhs.data[1] == rhs.data[1] &&
+            lhs.data[2] == rhs.data[2]);
   }
   return false;
 }

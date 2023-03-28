@@ -29,7 +29,7 @@ protected:
   std::shared_ptr<context> ctx = nullptr;
 };
 
-//using exception_list = vector_class<exception_ptr_class>;
+// using exception_list = vector_class<exception_ptr_class>;
 class exception_list {
 public:
   std::size_t size() {
@@ -46,19 +46,19 @@ public:
 
 private:
   friend class queue;
-  
-  void pushback(const exception_ptr_class &value) {
+
+  void pushback(const exception_ptr_class& value) {
     ptrlist.emplace_back(value);
   };
 
-  void pushback(exception_ptr_class &&value) {
+  void pushback(exception_ptr_class&& value) {
     ptrlist.emplace_back(std::move(value));
   };
 
   vector_class<exception_ptr_class> ptrlist;
 };
 
-using async_handler  = function_class<void, exception_list>;
+using async_handler = function_class<void, exception_list>;
 
 class runtime_error : public exception {
   using exception::exception;

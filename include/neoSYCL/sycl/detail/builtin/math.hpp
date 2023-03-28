@@ -71,7 +71,7 @@ T rootn(T x, int i) {
 }
 template <typename T>
 T rsqrt(T i) {
-  return 1/std::sqrt(i);
+  return 1 / std::sqrt(i);
 }
 template <typename T>
 T sinpi(T i) {
@@ -79,7 +79,7 @@ T sinpi(T i) {
 }
 template <typename T>
 T tanpi(T i) {
-  return std::tan((T) (M_PI * i));
+  return std::tan((T)(M_PI * i));
 }
 
 } // namespace detail
@@ -199,8 +199,8 @@ DEFINE_GEN_FUNC(lgamma, std::lgamma);
 template <typename T, int D>
 T lgamma_r(const T& x, int* y) {
   T R;
-  R = lgamma(x);
-  *y   = R < 0 ? 0 : 1;
+  R  = lgamma(x);
+  *y = R < 0 ? 0 : 1;
   return R;
 }
 

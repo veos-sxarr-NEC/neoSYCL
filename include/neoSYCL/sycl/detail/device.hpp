@@ -102,7 +102,7 @@ detail::program_data* device::create_program() const {
 vector_class<device> device::get_devices(info::device_type t) {
   vector_class<device> ret;
   platform plt = platform::register_all_devices();
-  ret = plt.get_devices(t);
+  ret          = plt.get_devices(t);
   return ret;
 }
 

@@ -99,10 +99,11 @@ static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
   int dim = data.dim;
 
   std::string pragma_private = "\n";
-  if(dim == 2) {
-	  pragma_private = " private(i1_)\n";
-  } else if(dim == 3) {
-	  pragma_private = " private(i1_,i2_)\n";
+  if (dim == 2) {
+    pragma_private = " private(i1_)\n";
+  }
+  else if (dim == 3) {
+    pragma_private = " private(i1_,i2_)\n";
   }
 
   auto vd = dyn_cast_or_null<VarDecl>(d);
@@ -119,10 +120,10 @@ static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
   if (vtype == "id") {
     st << pragma_omp_parallel_for;
   }
-  else if(vtype == "item") {
+  else if (vtype == "item") {
     st << pragma_omp_parallel;
   }
-   else {
+  else {
     cerr << "unknown index class\n";
     abort();
   }
@@ -131,12 +132,11 @@ static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
 
   if (vtype == "id") {
   }
-  else if(vtype == "item") {
+  else if (vtype == "item") {
 
     st << "{\n";
     if (dim == 1) {
-      st << "cl::sycl::item<1> " << vname
-         << "= cl::sycl::rt::id2item(r_,0);\n";
+      st << "cl::sycl::item<1> " << vname << "= cl::sycl::rt::id2item(r_,0);\n";
     }
     else if (dim == 2) {
       st << "cl::sycl::item<2> " << vname
@@ -163,9 +163,10 @@ static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
 
     if (vtype == "id") {
     }
-    else if(vtype == "item") {
+    else if (vtype == "item") {
       st << "{\n";
-      st << "cl::sycl::rt::id2item_" << dim << "_" << (i+1) << "(" << vname << ", i" << i << "_);\n" ;
+      st << "cl::sycl::rt::id2item_" << dim << "_" << (i + 1) << "(" << vname
+         << ", i" << i << "_);\n";
     }
     else {
       cerr << "unknown index class\n";
@@ -194,7 +195,7 @@ static void printLoop(str& st, CXXMethodDecl* func, Decl* d, Data& data) {
 
   if (vtype == "id") {
   }
-  else if(vtype == "item") {
+  else if (vtype == "item") {
     for (int i(0); i < dim; i++) {
       st << "}\n";
     }

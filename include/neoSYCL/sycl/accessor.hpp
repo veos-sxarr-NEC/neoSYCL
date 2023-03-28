@@ -30,13 +30,15 @@ public:
   accessor& operator=(const accessor& rhs) = default;
   accessor& operator=(accessor&& rhs) = default;
 
-  template <typename LT, typename RT, int LD, int RD, access::mode LM, access::mode RM,
-	    access::target LA, access::target RA, access::placeholder LP, access::placeholder RP>
+  template <typename LT, typename RT, int LD, int RD, access::mode LM,
+            access::mode RM, access::target LA, access::target RA,
+            access::placeholder LP, access::placeholder RP>
   friend bool operator==(const accessor<LT, LD, LM, LA, LP>& lhs,
                          const accessor<RT, RD, RM, RA, RP>& rhs);
 
-  template <typename LT, typename RT, int LD, int RD, access::mode LM, access::mode RM,
-	    access::target LA, access::target RA, access::placeholder LP, access::placeholder RP>
+  template <typename LT, typename RT, int LD, int RD, access::mode LM,
+            access::mode RM, access::target LA, access::target RA,
+            access::placeholder LP, access::placeholder RP>
   friend bool operator==(const accessor<LT, LD, LM, LA, LP>& lhs,
                          const accessor<RT, RD, RM, RA, RP>& rhs);
 
@@ -71,15 +73,17 @@ public:
    accessTarget == access::target::host_buffer) || (isPlaceholder ==
    access::placeholder::true_t && (accessTarget == access::target::global_buffer
    || accessTarget == access::target::constant_buffer))) && dimensions > 0 */
-  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
-            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode,
+            int D = dimensions, access::target T = accessTarget,
+            typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            const property_list& propList = {})
       : data(bufferRef.get_data()), accessRange(bufferRef.get_range()),
         accessOffset(), device_ptr(nullptr) {
     if (T == access::target::host_buffer) {
       bufferRef.copy_dev2host(Mode);
-    } else {
+    }
+    else {
       bufferRef.copy_host2dev(Mode);
     }
   }
@@ -87,8 +91,9 @@ public:
   /* Available only when: (isPlaceholder == access::placeholder::false_t &&
    (accessTarget == access::target::global_buffer || accessTarget ==
    access::target::constant_buffer)) && dimensions > 0 */
-  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
-            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode,
+            int D = dimensions, access::target T = accessTarget,
+            typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            handler& commandGroupHandlerRef, const property_list& propList = {})
       : data(bufferRef.get_data()), accessRange(bufferRef.get_range()),
@@ -101,15 +106,17 @@ public:
    accessTarget == access::target::host_buffer) || (isPlaceholder ==
   access::placeholder::true_t && (accessTarget == access::target::global_buffer
    || accessTarget == access::target::constant_buffer)) && dimensions > 0 */
-  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
-            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode,
+            int D = dimensions, access::target T = accessTarget,
+            typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            range<dimensions> accessRange, const property_list& propList = {})
       : data(bufferRef.get_data()), accessRange(accessRange), accessOffset(),
         device_ptr(nullptr) {
     if (T == access::target::host_buffer) {
       bufferRef.copy_dev2host(Mode);
-    } else {
+    }
+    else {
       bufferRef.copy_host2dev(Mode);
     }
   }
@@ -118,8 +125,9 @@ public:
    accessTarget == access::target::host_buffer) || (isPlaceholder ==
    access::placeholder::true_t && (accessTarget == access::target::global_buffer
   || accessTarget == access::target::constant_buffer)) && dimensions > 0 */
-  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
-            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode,
+            int D = dimensions, access::target T = accessTarget,
+            typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            range<dimensions> accessRange, id<dimensions> accessOffset,
            const property_list& propList = {})
@@ -127,7 +135,8 @@ public:
         accessOffset(accessOffset), device_ptr(nullptr) {
     if (T == access::target::host_buffer) {
       bufferRef.copy_dev2host(Mode);
-    } else {
+    }
+    else {
       bufferRef.copy_host2dev(Mode);
     }
   }
@@ -135,8 +144,9 @@ public:
   /* Available only when: (isPlaceholder == access::placeholder::false_t &&
   (accessTarget == access::target::global_buffer || accessTarget ==
   access::target::constant_buffer)) && dimensions > 0 */
-  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
-            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode,
+            int D = dimensions, access::target T = accessTarget,
+            typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            handler& commandGroupHandlerRef, range<dimensions> accessRange,
            const property_list& propList = {})
@@ -149,8 +159,9 @@ public:
   /* Available only when: (isPlaceholder == access::placeholder::false_t &&
   (accessTarget == access::target::global_buffer || accessTarget ==
   access::target::constant_buffer)) && dimensions > 0 */
-  template <typename AllocatorT, access::mode Mode = accessMode, int D = dimensions,
-            access::target T = accessTarget, typename = std::enable_if_t<(D > 0)>>
+  template <typename AllocatorT, access::mode Mode = accessMode,
+            int D = dimensions, access::target T = accessTarget,
+            typename = std::enable_if_t<(D > 0)>>
   accessor(buffer<dataT, dimensions, AllocatorT>& bufferRef,
            handler& commandGroupHandlerRef, range<dimensions> accessRange,
            id<dimensions> accessOffset, const property_list& propList = {})
@@ -273,7 +284,8 @@ public:
   template <
       access::mode Mode = accessMode, int D = dimensions,
       typename = std::enable_if_t<(Mode == access::mode::read) && (D == 3)>>
-  const detail::container::AccessProxyND<dataT, 3> operator[](size_t index) const {
+  const detail::container::AccessProxyND<dataT, 3>
+  operator[](size_t index) const {
     return (*data)[index];
   }
 
@@ -342,8 +354,9 @@ private:
   void alloc_(handler& h) /* defined in handler.hpp */;
 };
 
-template <typename LT, typename RT, int LD, int RD, access::mode LM, access::mode RM,
-	  access::target LA, access::target RA, access::placeholder LP, access::placeholder RP>
+template <typename LT, typename RT, int LD, int RD, access::mode LM,
+          access::mode RM, access::target LA, access::target RA,
+          access::placeholder LP, access::placeholder RP>
 bool operator==(const accessor<LT, LD, LM, LA, LP>& lhs,
                 const accessor<RT, RD, RM, RA, RP>& rhs) {
   if (LD != RD || LM != RM || LA != RA || LP != RP) {
@@ -354,11 +367,12 @@ bool operator==(const accessor<LT, LD, LM, LA, LP>& lhs,
   void* rdata = rhs.data.get();
 
   return ldata == rdata && lhs.accessRange == rhs.accessRange &&
-       lhs.accessOffset == rhs.accessOffset;
+         lhs.accessOffset == rhs.accessOffset;
 }
 
-template <typename LT, typename RT, int LD, int RD, access::mode LM, access::mode RM,
-	  access::target LA, access::target RA, access::placeholder LP, access::placeholder RP>
+template <typename LT, typename RT, int LD, int RD, access::mode LM,
+          access::mode RM, access::target LA, access::target RA,
+          access::placeholder LP, access::placeholder RP>
 bool operator!=(const accessor<LT, LD, LM, LA, LP>& lhs,
                 const accessor<RT, RD, RM, RA, RP>& rhs) {
   return !(lhs == rhs);

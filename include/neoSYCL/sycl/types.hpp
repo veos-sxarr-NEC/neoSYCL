@@ -68,12 +68,12 @@ struct kernel_list {
   std::shared_ptr<sem_t> fence;
   std::shared_ptr<kernel_list> next;
 
-  kernel_list () {
+  kernel_list() {
     fence = std::shared_ptr<sem_t>(new sem_t);
-    next = NULL;
+    next  = NULL;
   }
 
-  ~kernel_list () = default;
+  ~kernel_list() = default;
 };
 
 } // namespace neosycl::sycl

@@ -6,8 +6,10 @@ class event {
 public:
   event() {}
 
-  explicit event(shared_ptr_class<detail::task_counter> counter, async_handler err_handler, shared_ptr_class<exception_list> exlist)
-    : c(counter), h(err_handler), l(exlist) {}
+  explicit event(shared_ptr_class<detail::task_counter> counter,
+                 async_handler err_handler,
+                 shared_ptr_class<exception_list> exlist)
+      : c(counter), h(err_handler), l(exlist) {}
 
   ~event() {}
 

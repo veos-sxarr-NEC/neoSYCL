@@ -50,7 +50,8 @@ void context::init(vector_class<device> dev) {
     DEBUG_INFO("context created with no device");
     return;
   }
-  impl_ = shared_ptr_class<detail::context_impl>(new detail::context_impl(*this));
+  impl_ =
+      shared_ptr_class<detail::context_impl>(new detail::context_impl(*this));
   for (auto& d : dev) {
     if (d.get_impl() == nullptr) {
       throw invalid_object_error("null device object found");

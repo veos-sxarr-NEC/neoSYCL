@@ -11,7 +11,7 @@ public:
   explicit queue(const property_list& propList = {})
       : bind_device(device::get_default_device()),
         counter(new detail::task_counter()), ctx(bind_device), prog(ctx),
-	ctx_ptr(new context(ctx)) {
+        ctx_ptr(new context(ctx)) {
     first_sem_set();
   }
 
@@ -98,21 +98,23 @@ public:
   event submit(T cgf) {
     sem_set();
     counter->incr();
-    std::thread t([f = cgf, d = bind_device, p = prog, c = counter, k = kernel_listptr, l = exlist, s = buf_sem, ct = ctx_ptr]() {
+    std::thread t([f = cgf, d = bind_device, p = prog, c = counter,
+                   k = kernel_listptr, l = exlist, s = buf_sem,
+                   ct = ctx_ptr]() {
       try {
         handler command_group_handler(d, p, c, k, s);
         f(command_group_handler);
       }
       catch (exception& e) {
         PRINT_ERR("%s", e.what());
-	e.ctx = ct;
-	l->pushback(std::current_exception());
-	sem_post(s.get());
+        e.ctx = ct;
+        l->pushback(std::current_exception());
+        sem_post(s.get());
       }
       catch (...) {
         PRINT_ERR("unknown exception");
         l->pushback(std::current_exception());
-	sem_post(s.get());
+        sem_post(s.get());
       }
       c->decr();
     });
@@ -185,25 +187,25 @@ private:
   std::shared_ptr<sem_t> buf_sem;
 
   /*The first kernel does not lock and allocate buffer access wait sem*/
-  void first_sem_set () {
-    head = std::shared_ptr<kernel_list>(new kernel_list); 
+  void first_sem_set() {
+    head = std::shared_ptr<kernel_list>(new kernel_list);
     sem_init(head->fence.get(), 0, 1);
 
     buf_sem = std::shared_ptr<sem_t>(new sem_t);
   }
 
   /*Lock the next submitted kernel in advance and lock buffer access wait sem*/
-  void sem_set () {
+  void sem_set() {
     exlist = std::shared_ptr<exception_list>(new exception_list);
     std::shared_ptr<kernel_list> newlist(new kernel_list());
     std::shared_ptr<kernel_list> listptr = head;
-    
+
     while (listptr->next) {
       listptr = listptr->next;
     }
-    
+
     kernel_listptr = listptr;
-    listptr->next = newlist;
+    listptr->next  = newlist;
     sem_init(listptr->next->fence.get(), 0, 0);
 
     sem_init(buf_sem.get(), 0, 0);

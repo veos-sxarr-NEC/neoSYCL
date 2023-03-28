@@ -30,7 +30,7 @@ public:
   }
 
   context(const device& dev, async_handler asyncHandler,
-          const property_list& propList = {}) 
+          const property_list& propList = {})
       : ahandl_(asyncHandler) {
     init({dev});
   }

@@ -13,12 +13,15 @@ class handler {
 
   friend class queue;
 
-  explicit handler(device d, program p, counter_type counter, std::shared_ptr<kernel_list> kernel_listptr, std::shared_ptr<sem_t> buf_sem)
+  explicit handler(device d, program p, counter_type counter,
+                   std::shared_ptr<kernel_list> kernel_listptr,
+                   std::shared_ptr<sem_t> buf_sem)
       : dev_(std::move(d)), prog_(std::move(p)), cntr_(std::move(counter)),
-        hndl_(prog_.get_data(dev_)), kernel_listptr_(kernel_listptr), buf_sem_(buf_sem) {}
+        hndl_(prog_.get_data(dev_)), kernel_listptr_(kernel_listptr),
+        buf_sem_(buf_sem) {}
 
   ~handler() {
-    //Execution order control is performed by kernel_listptr.
+    // Execution order control is performed by kernel_listptr.
     /*for (size_t i(0); i < acc_.size(); i++) {
       // DEBUG_INFO("memory unlock: %p", acc_[i].data.get());
 
@@ -229,7 +232,7 @@ public:
       if (count == 1) {
         // multiple accessors would use the same buffer
         acc.device_ptr = buf->map.at(hndl_).ptr;
-        if(m != access::mode::read) {
+        if (m != access::mode::read) {
           buf->map.at(hndl_).mode = m;
         }
       }
@@ -261,10 +264,10 @@ public:
         if (acc_[i].data.get() == acc.data.get()) {
           if (acc_[i].mode == access::mode::read && m != access::mode::read) {
             // not sure if this is a thread-safe way...
-	    
-	    //Execution order control is performed by kernel_listptr.
-            //acc_[i].data->unlock_read();
-            //acc_[i].data->lock_write();
+
+            // Execution order control is performed by kernel_listptr.
+            // acc_[i].data->unlock_read();
+            // acc_[i].data->lock_write();
 
             acc_[i].mode            = m; // this is used for unlocking
             buf->map.at(hndl_).mode = m; // this is used for buffer copy back
@@ -276,7 +279,7 @@ public:
     if (i == acc_.size()) {
       // DEBUG_INFO("memory lock: %p", acc.data.get());
       acc_.push_back(detail::accessor_data(acc.data, m));
-      //Execution order control is performed by kernel_listptr.
+      // Execution order control is performed by kernel_listptr.
       /*if (m != access::mode::read)
         acc.data->lock_write();
       else
@@ -327,9 +330,9 @@ private:
   }
 
   void sem_meet_up() {
-    //Wake the main thread
+    // Wake the main thread
     sem_post(buf_sem_.get());
-    //Wait for the previous kernel execution to finish
+    // Wait for the previous kernel execution to finish
     sem_wait(kernel_listptr_->fence.get());
   }
 };

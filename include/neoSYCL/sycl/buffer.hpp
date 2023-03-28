@@ -31,9 +31,9 @@ public:
 template <typename T, int dimensions = 1,
           typename AllocatorT = buffer_allocator<T>>
 class buffer {
-template <typename dataT, int dimension, access::mode accessMode,
-          access::target accessTarget, access::placeholder isPlaceholder>
-friend class accessor;
+  template <typename dataT, int dimension, access::mode accessMode,
+            access::target accessTarget, access::placeholder isPlaceholder>
+  friend class accessor;
 
 public:
   using value_type      = T;
@@ -185,16 +185,17 @@ public:
   buffer<ReinterpretT, ReinterpretDim, buffer_allocator<ReinterpretT>>
   reinterpret(range<ReinterpretDim> reinterpretRange) const {
     using unsigned_PT = typename std::make_unsigned<value_type>::type;
-    int P_digit = std::numeric_limits<unsigned_PT>::digits;
+    int P_digit       = std::numeric_limits<unsigned_PT>::digits;
 
     using unsigned_CT = typename std::make_unsigned<ReinterpretT>::type;
-    int C_digit = std::numeric_limits<unsigned_CT>::digits;
+    int C_digit       = std::numeric_limits<unsigned_CT>::digits;
 
-    if (P_digit*bufferRange.size() != C_digit*reinterpretRange.size()) {
+    if (P_digit * bufferRange.size() != C_digit * reinterpretRange.size()) {
       throw sycl::invalid_object_error("invalid size");
     }
 
-    buffer<ReinterpretT, ReinterpretDim> r(reinterpret_cast<ReinterpretT*>(data->get_ptr()), reinterpretRange);
+    buffer<ReinterpretT, ReinterpretDim> r(
+        reinterpret_cast<ReinterpretT*>(data->get_ptr()), reinterpretRange);
 
     return r;
   }
@@ -207,13 +208,14 @@ private:
   range<dimensions> bufferRange;
   std::shared_ptr<container_type> data;
   bool first_dev_write = 1;
-  int last_write_plat = 0;
+  int last_write_plat  = 0;
 
 protected:
   void copy_host2dev(access::mode mode) {
     if (last_write_plat != 1 && first_dev_write != 1) {
       for (auto& d : data->map) {
-         d.first->write_mem(data->map.at(d.first).ptr,data->get_raw_ptr(),data->get_size());
+        d.first->write_mem(data->map.at(d.first).ptr, data->get_raw_ptr(),
+                           data->get_size());
       }
     }
     if (mode != access::mode::read) {
@@ -226,15 +228,15 @@ protected:
 
   void copy_dev2host(access::mode mode) {
     if (last_write_plat != 0) {
-      for (auto& d :data->map) {
-          d.first->read_mem(data->get_raw_ptr(),data->map.at(d.first).ptr,data->get_size());
+      for (auto& d : data->map) {
+        d.first->read_mem(data->get_raw_ptr(), data->map.at(d.first).ptr,
+                          data->get_size());
       }
     }
     if (mode != access::mode::read) {
       last_write_plat = 0;
     }
   }
-
 };
 
 template <typename Ty, int D, typename A>

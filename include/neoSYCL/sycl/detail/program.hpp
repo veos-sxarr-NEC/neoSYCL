@@ -38,7 +38,8 @@ inline string_class get_kernel_name_from_class(const std::type_info& ti) {
 // internal program state on each device and interface to handle the device
 class program_data {
 public:
-  template <typename T, int dimensions, typename AllocatorT> friend class neosycl::sycl::buffer;
+  template <typename T, int dimensions, typename AllocatorT>
+  friend class neosycl::sycl::buffer;
   friend class neosycl::sycl::handler;
   friend class container::CopybackProxy;
 
@@ -87,12 +88,14 @@ protected:
     for (size_t idx(0); idx != dim; idx++) {
       sz[idx] = r[idx];
     }
-    if(dim == 1) {
+    if (dim == 1) {
       sz[3] = i.i_0;
-    } else if(dim == 2) {
+    }
+    else if (dim == 2) {
       sz[3] = i.i_0;
       sz[4] = i.i_1;
-    } else { // dim == 3
+    }
+    else { // dim == 3
       sz[3] = i.i_0;
       sz[4] = i.i_1;
       sz[5] = i.i_2;
@@ -314,7 +317,8 @@ class CopybackProxy {
 public:
   template <typename T, int D, typename A = buffer_allocator<T>>
   void operator()(BufferContainer<T, D, A>& buf,
-                  shared_ptr_class<program_data> p, bool free_mem_flag, bool destructor_flag) {
+                  shared_ptr_class<program_data> p, bool free_mem_flag,
+                  bool destructor_flag) {
     DEBUG_INFO("memory copy back : device type = %d",
                (int)p->get_device().type());
 
@@ -324,7 +328,7 @@ public:
       auto [devp, mode] = buf.map.at(p);
       if (mode != access::mode::read && buf.get_raw_ptr() != nullptr) {
         p->read_mem(buf.get_raw_ptr(), devp, buf.get_size(), destructor_flag);
-      // buf.map.erase(p);
+        // buf.map.erase(p);
       }
       if (free_mem_flag) {
         p->free_mem(devp, destructor_flag);

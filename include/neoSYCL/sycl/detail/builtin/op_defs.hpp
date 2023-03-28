@@ -59,78 +59,96 @@ namespace neosycl::sycl {
   }
 
 #define DEFINE_GEN_FUNC2_upsample(N, F)                                        \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==8>>                                     \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 8>>  \
   unsigned short N(const T& x, const T& y) {                                   \
     return F(x, y);                                                            \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==8>, int D>                              \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 8>,  \
+            int D>                                                             \
   vec<unsigned short, D> N(const vec<T, D>& x, const vec<T, D>& y) {           \
     vec<unsigned short, D> R;                                                  \
     for (int i = 0; i < D; i++)                                                \
       R[i] = F(x[i], y[i]);                                                    \
     return R;                                                                  \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==7>>                                     \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 7>>  \
   short N(const T& x, const T& y) {                                            \
     return F(x, y);                                                            \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==7>, int D>                              \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 7>,  \
+            int D>                                                             \
   vec<short, D> N(const vec<T, D>& x, const vec<T, D>& y) {                    \
     vec<short, D> R;                                                           \
     for (int i = 0; i < D; i++)                                                \
       R[i] = F(x[i], y[i]);                                                    \
     return R;                                                                  \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==16>>                                    \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 16>> \
   unsigned int N(const T& x, const T& y) {                                     \
     return F(x, y);                                                            \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==16>, int D>                             \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 16>, \
+            int D>                                                             \
   vec<unsigned int, D> N(const vec<T, D>& x, const vec<T, D>& y) {             \
     vec<unsigned int, D> R;                                                    \
     for (int i = 0; i < D; i++)                                                \
       R[i] = F(x[i], y[i]);                                                    \
     return R;                                                                  \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==15>>                                    \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 15>> \
   int N(const T& x, const T& y) {                                              \
     return F(x, y);                                                            \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==15>, int D>                             \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 15>, \
+            int D>                                                             \
   vec<int, D> N(const vec<T, D>& x, const vec<T, D>& y) {                      \
     vec<int, D> R;                                                             \
     for (int i = 0; i < D; i++)                                                \
       R[i] = F(x[i], y[i]);                                                    \
     return R;                                                                  \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==32>>                                    \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 32>> \
   unsigned long long N(const T& x, const T& y) {                               \
     return F(x, y);                                                            \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==32>, int D>                             \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 32>, \
+            int D>                                                             \
   vec<unsigned long long, D> N(const vec<T, D>& x, const vec<T, D>& y) {       \
     vec<unsigned long long, D> R;                                              \
     for (int i = 0; i < D; i++)                                                \
       R[i] = F(x[i], y[i]);                                                    \
     return R;                                                                  \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==31>>                                    \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 31>> \
   long long N(const T& x, const T& y) {                                        \
     return F(x, y);                                                            \
   }                                                                            \
-  template <typename T, typename = std::enable_if_t<std::is_integral<T>::value \
-    && std::numeric_limits<T>::digits==31>, int D>                             \
+  template <typename T,                                                        \
+            typename = std::enable_if_t<std::is_integral<T>::value &&          \
+                                        std::numeric_limits<T>::digits == 31>, \
+            int D>                                                             \
   vec<long long, D> N(const vec<T, D>& x, const vec<T, D>& y) {                \
     vec<long long, D> R;                                                       \
     for (int i = 0; i < D; i++)                                                \

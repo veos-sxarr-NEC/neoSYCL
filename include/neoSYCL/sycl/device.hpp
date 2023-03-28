@@ -75,7 +75,8 @@ public:
     throw unimplemented();
   }
 
-  static vector_class<device> get_devices(info::device_type = info::device_type::all);
+  static vector_class<device>
+      get_devices(info::device_type = info::device_type::all);
 
 #if 0
   // Available only when prop ==
